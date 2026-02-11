@@ -1,26 +1,62 @@
-import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Clients from './screens/Clients';
+import Accounts from './screens/Accounts';
+import Movements from './screens/Movements';
+import Reports from './screens/Reports';
 
 function App() {
-  const [selected, setSelected] = useState('home');
-
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      <div style={{ width: '200px', background: '#f0f0f0', padding: '1rem' }}>
-        <ul>
-          <li onClick={() => setSelected('home')}>Clientes</li>
-          <li onClick={() => setSelected('profile')}>Cuentas</li>
-          <li onClick={() => setSelected('settings')}>Movimientos</li>
-          <li onClick={() => setSelected('reports')}>Reportes</li>
-        </ul>
-      </div>
+    <Router>
+      <div style={{ display: 'flex', height: '100vh' }}>
+        {/* Sidebar */}
+        <nav style={{ width: '200px', background: '#f0f0f0', padding: '1rem' }}>
+          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            <li style={{ marginBottom: '1rem' }}>
+              <Link
+                to="/clients"
+                style={{ textDecoration: 'none', color: 'black' }}
+              >
+                Clientes
+              </Link>
+            </li>
+            <li style={{ marginBottom: '1rem' }}>
+              <Link
+                to="/accounts"
+                style={{ textDecoration: 'none', color: 'black' }}
+              >
+                Cuentas
+              </Link>
+            </li>
+            <li style={{ marginBottom: '1rem' }}>
+              <Link
+                to="/movements"
+                style={{ textDecoration: 'none', color: 'black' }}
+              >
+                Movimientos
+              </Link>
+            </li>
+            <li style={{ marginBottom: '1rem' }}>
+              <Link
+                to="/reports"
+                style={{ textDecoration: 'none', color: 'black' }}
+              >
+                Reportes
+              </Link>
+            </li>
+          </ul>
+        </nav>
 
-      <div style={{ flex: 1, padding: '2rem' }}>
-        {selected === 'home' && <h2>Clientes</h2>}
-        {selected === 'profile' && <h2>Cuentas</h2>}
-        {selected === 'settings' && <h2>Movimientos</h2>}
-        {selected === 'reports' && <h2>Reportes</h2>}
+        {/* Contenido dinámico */}
+        <main style={{ flex: 1, padding: '2rem' }}>
+          <Routes>
+            <Route path="/clients" element={<Clients />} />
+            <Route path="/accounts" element={<Accounts />} />
+            <Route path="/movements" element={<Movements />} />
+            <Route path="/reports" element={<Reports />} />
+          </Routes>
+        </main>
       </div>
-    </div>
+    </Router>
   );
 }
 
