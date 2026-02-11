@@ -1,29 +1,25 @@
-.movements-grid {
+.reports-grid {
     width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
 }
 
-.movements-grid th,
-.movements-grid td {
+.reports-grid th,
+.reports-grid td {
     padding: 0.75rem;
     border: 1px solid #ddd;
     text-align: left;
 }
 
-.movements-grid th {
+.reports-grid th {
     background-color: #f9f9f9;
     font-weight: 600;
 }
 
-.movements-grid tr:last-child td {
-    border-bottom: none;
-}
-
-.movements-grid td.negative {
+.reports-grid td.negative {
     color: red;
 }
 
-.movements-grid td.positive {
+.reports-grid td.positive {
     color: green;
 }

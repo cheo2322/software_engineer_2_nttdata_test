@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Clients from './screens/clients/Clients';
 import Accounts from './screens/accounts/Accounts';
 import Movements from './screens/movements/Movements';
-import Reports from './screens/Reports';
+import Reports from './screens/reports/Reports';
 import './App.css';
 
 function App() {
