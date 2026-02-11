@@ -31,7 +31,7 @@ public class Person {
   @Column(unique = true)
   private String phone;
 
-  enum GenrePerson {
+  public enum GenrePerson {
     MALE,
     FEMALE,
     OTHER

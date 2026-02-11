@@ -1,5 +1,6 @@
 package com.nttdata.bank.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -29,7 +30,7 @@ public class Client {
   @Column(name = "client_status")
   private Boolean status;
 
-  @OneToOne
+  @OneToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "person_id", referencedColumnName = "id")
   private Person person;
 

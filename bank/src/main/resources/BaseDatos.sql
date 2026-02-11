@@ -48,19 +48,19 @@ ON CONFLICT (identification) DO NOTHING;
 
 
 INSERT INTO clients (password_hash, client_status, person_id)
-SELECT '$2a$10$7EqJtq98hPqEX7fNZaFWoO5f5J8bQxj5lHcG4z0f5zE7Yy1fQJ9lG', TRUE, p.id
+SELECT 'A6xnQhbz4Vx2HuGl4lXwZ5U2I8iziLRFnhP5eNfIRvQ=', TRUE, p.id
 FROM persons p
 WHERE p.identification = '1001234567'
   AND NOT EXISTS (SELECT 1 FROM clients WHERE person_id = p.id);
 
 INSERT INTO clients (password_hash, client_status, person_id)
-SELECT '$2a$10$u1cXfQyQkYJvQkYJvQkYJvQkYJvQkYJvQkYJvQkYJvQkYJvQkYJ', TRUE, p.id
+SELECT '+GOLl5svT3k92229GX4O4lp6bqMrCuIvXjxdEZ2DnnU=', TRUE, p.id
 FROM persons p
 WHERE p.identification = '1001234568'
   AND NOT EXISTS (SELECT 1 FROM clients WHERE person_id = p.id);
 
 INSERT INTO clients (password_hash, client_status, person_id)
-SELECT '$2a$10$9vQJtq98hPqEX7fNZaFWoO5f5J8bQxj5lHcG4z0f5zE7Yy1fQJ9lG', TRUE, p.id
+SELECT 'jCRLNwdHwZMKTglnJUd43btp9qQJ5ivuvl+SGRoJo6E=', TRUE, p.id
 FROM persons p
 WHERE p.identification = '1005678912'
   AND NOT EXISTS (SELECT 1 FROM clients WHERE person_id = p.id);
