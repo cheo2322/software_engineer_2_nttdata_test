@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Clients from './screens/clients/Clients';
-import Accounts from './screens/Accounts';
+import Accounts from './screens/accounts/Accounts';
 import Movements from './screens/Movements';
 import Reports from './screens/Reports';
 import './App.css';

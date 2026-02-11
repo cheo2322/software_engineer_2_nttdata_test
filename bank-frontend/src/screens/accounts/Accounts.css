@@ -1,0 +1,20 @@
+.accounts-grid {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.accounts-grid th,
+.accounts-grid td {
+    padding: 0.75rem;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+.accounts-grid th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+}
+
+.accounts-grid tr:last-child td {
+    border-bottom: none;
+}
