@@ -17,7 +17,9 @@ public class Person {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "person_name")
   private String name;
+
   private GenrePerson genre;
   private Integer age;
 

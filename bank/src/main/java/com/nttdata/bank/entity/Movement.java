@@ -20,10 +20,13 @@ public class Movement {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "movement_timestamp")
   private Timestamp timestamp;
 
   @Column(name = "movement_type")
   private MovementType type;
+
+  @Column(name = "movement_value")
   private Double value;
   private Double balance;
 
