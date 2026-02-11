@@ -2,11 +2,7 @@ import { useState } from 'react';
 import './Clients.css';
 
 export default function Clients() {
-  const [clients, _] = useState([
-    'Juan Pérez',
-    'María López',
-    'Carlos Sánchez',
-  ]);
+  const [clients] = useState(['Juan Pérez', 'María López', 'Carlos Sánchez']);
 
   const [search, setSearch] = useState('');
 
@@ -29,15 +25,17 @@ export default function Clients() {
         </div>
       </div>
 
-      {filteredClients.length > 0 ? (
-        <ul className="clients-list">
-          {filteredClients.map((client, index) => (
-            <li key={index}>{client}</li>
-          ))}
-        </ul>
-      ) : (
-        <p className="clients-empty">No hay clientes disponibles.</p>
-      )}
+      <div className="clients-list-container">
+        {filteredClients.length > 0 ? (
+          <ul className="clients-list">
+            {filteredClients.map((client, index) => (
+              <li key={index}>{client}</li>
+            ))}
+          </ul>
+        ) : (
+          <p className="clients-empty">No hay clientes disponibles.</p>
+        )}
+      </div>
     </div>
   );
 }
