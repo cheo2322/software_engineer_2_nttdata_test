@@ -1,0 +1,56 @@
+.clients-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.clients-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.clients-header h2 {
+    margin-bottom: 1rem;
+    font-weight: normal;
+}
+
+.clients-header-actions {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.clients-header-actions input {
+    flex: 1;
+    padding: 0.5rem;
+}
+
+.clients-header-actions button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.clients-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.clients-list li {
+    padding: 0.75rem;
+    border-bottom: 1px solid #ddd;
+}
+
+
+.clients-empty {
+    color: #666;
+    text-align: left;
+}
