@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './Clients.css';
+import '../../../styles/Entities.css';
 
 export default function Clients() {
   const [clients] = useState(['Juan Pérez', 'María López', 'Carlos Sánchez']);
@@ -11,10 +12,10 @@ export default function Clients() {
   );
 
   return (
-    <div className="clients-container">
-      <div className="clients-header">
+    <div className="entity-container">
+      <div className="entity-header">
         <h2>Clientes</h2>
-        <div className="clients-header-actions">
+        <div className="entity-header-actions">
           <input
             type="text"
             placeholder="Buscar"
@@ -25,7 +26,7 @@ export default function Clients() {
         </div>
       </div>
 
-      <div className="clients-list-container">
+      <div className="entity-data-container">
         {filteredClients.length > 0 ? (
           <ul className="clients-list">
             {filteredClients.map((client, index) => (
@@ -33,7 +34,7 @@ export default function Clients() {
             ))}
           </ul>
         ) : (
-          <p className="clients-empty">No hay clientes disponibles.</p>
+          <p className="entity-empty">No hay clientes disponibles.</p>
         )}
       </div>
     </div>

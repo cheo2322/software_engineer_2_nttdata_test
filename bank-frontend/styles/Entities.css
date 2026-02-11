@@ -1,0 +1,51 @@
+.entity-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.entity-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.entity-header h2 {
+    font-weight: normal;
+    margin-bottom: 1rem;
+}
+
+.entity-header-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+    font-family: inherit;
+}
+
+.entity-header-actions input {
+    flex: 0 0 20%;
+    min-width: 200px;
+    padding: 0.5rem;
+}
+
+.entity-header-actions button {
+    padding: 0.5rem 1rem;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.entity-data-container {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.entity-empty {
+    color: #666;
+    padding: 1rem;
+}
