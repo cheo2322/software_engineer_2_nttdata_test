@@ -1,35 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [selected, setSelected] = useState('home');
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div style={{ display: 'flex', height: '100vh' }}>
+      <div style={{ width: '200px', background: '#f0f0f0', padding: '1rem' }}>
+        <ul>
+          <li onClick={() => setSelected('home')}>Clientes</li>
+          <li onClick={() => setSelected('profile')}>Cuentas</li>
+          <li onClick={() => setSelected('settings')}>Movimientos</li>
+          <li onClick={() => setSelected('reports')}>Reportes</li>
+        </ul>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+
+      <div style={{ flex: 1, padding: '2rem' }}>
+        {selected === 'home' && <h2>Clientes</h2>}
+        {selected === 'profile' && <h2>Cuentas</h2>}
+        {selected === 'settings' && <h2>Movimientos</h2>}
+        {selected === 'reports' && <h2>Reportes</h2>}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
