@@ -1,45 +1,58 @@
-#root {
-  max-width: 100%;
+.app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+.app-header {
+  color: #000;
+  padding: 1rem 1rem;
+  text-align: center;
+}
+
+.app-header h1 {
+  font-size: 1.2rem;
   margin: 0;
+  font-weight: 500;
+}
+
+.app-layout {
+  display: flex;
+  flex: 1;
+}
+
+.app-sidebar {
+  width: 200px;
+  background-color: #f0f0f0;
+  padding: 1rem;
+  border-right: 1px solid #ddd;
+}
+
+.app-sidebar ul {
+  list-style: none;
   padding: 0;
-  text-align: left;
+  margin: 0;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+.app-sidebar li {
+  margin-bottom: 1rem;
 }
 
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+.app-sidebar a {
+  text-decoration: none;
+  color: #333;
+  font-weight: 500;
 }
 
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.app-sidebar a:hover {
+  color: #007bff;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.app-content {
+  flex: 1;
+  padding: 0 2rem;
+  background-color: #fff;
 }

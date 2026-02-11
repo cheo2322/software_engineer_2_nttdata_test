@@ -3,56 +3,43 @@ import Clients from './screens/clients/Clients';
 import Accounts from './screens/Accounts';
 import Movements from './screens/Movements';
 import Reports from './screens/Reports';
+import './App.css';
 
 function App() {
   return (
     <Router>
-      <div style={{ display: 'flex', height: '100vh' }}>
-        <nav style={{ width: '200px', background: '#f0f0f0', padding: '1rem' }}>
-          <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
-            <li style={{ marginBottom: '1rem' }}>
-              <Link
-                to="/clients"
-                style={{ textDecoration: 'none', color: 'black' }}
-              >
-                Clientes
-              </Link>
-            </li>
-            <li style={{ marginBottom: '1rem' }}>
-              <Link
-                to="/accounts"
-                style={{ textDecoration: 'none', color: 'black' }}
-              >
-                Cuentas
-              </Link>
-            </li>
-            <li style={{ marginBottom: '1rem' }}>
-              <Link
-                to="/movements"
-                style={{ textDecoration: 'none', color: 'black' }}
-              >
-                Movimientos
-              </Link>
-            </li>
-            <li style={{ marginBottom: '1rem' }}>
-              <Link
-                to="/reports"
-                style={{ textDecoration: 'none', color: 'black' }}
-              >
-                Reportes
-              </Link>
-            </li>
-          </ul>
-        </nav>
+      <div className="app-root">
+        <header className="app-header">
+          <h1>BANCO</h1>
+        </header>
 
-        <main style={{ flex: 1, padding: '2rem' }}>
-          <Routes>
-            <Route path="/clients" element={<Clients />} />
-            <Route path="/accounts" element={<Accounts />} />
-            <Route path="/movements" element={<Movements />} />
-            <Route path="/reports" element={<Reports />} />
-          </Routes>
-        </main>
+        <div className="app-layout">
+          <nav className="app-sidebar">
+            <ul>
+              <li>
+                <Link to="/clients">Clientes</Link>
+              </li>
+              <li>
+                <Link to="/accounts">Cuentas</Link>
+              </li>
+              <li>
+                <Link to="/movements">Movimientos</Link>
+              </li>
+              <li>
+                <Link to="/reports">Reportes</Link>
+              </li>
+            </ul>
+          </nav>
+
+          <main className="app-content">
+            <Routes>
+              <Route path="/clients" element={<Clients />} />
+              <Route path="/accounts" element={<Accounts />} />
+              <Route path="/movements" element={<Movements />} />
+              <Route path="/reports" element={<Reports />} />
+            </Routes>
+          </main>
+        </div>
       </div>
     </Router>
   );
