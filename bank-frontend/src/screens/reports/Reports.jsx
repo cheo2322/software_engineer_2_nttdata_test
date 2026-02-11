@@ -12,57 +12,80 @@ export default function Reports() {
 
   const [search, setSearch] = useState('');
   const [filteredMovements, setFilteredMovements] = useState([]);
+  const [searched, setSearched] = useState(false);
 
   const handleSearch = () => {
     const results = movements
       .filter((m) => m.account.toLowerCase().includes(search.toLowerCase()))
       .sort((a, b) => new Date(a.date) - new Date(b.date));
     setFilteredMovements(results);
+    setSearched(true);
   };
+
+  const handleDownload = () => {
+    alert('Por implementar');
+  };
+
+  let content;
+  if (filteredMovements.length > 0) {
+    content = (
+      <table className="reports-grid">
+        <thead>
+          <tr>
+            <th>Fecha y hora</th>
+            <th>Cuenta</th>
+            <th>Valor</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredMovements.map((m, index) => (
+            <tr key={index}>
+              <td>{m.date}</td>
+              <td>{m.account}</td>
+              <td className={m.value < 0 ? 'negative' : 'positive'}>
+                {m.value < 0 ? m.value : `+${m.value}`}
+              </td>
+              <td>${m.balance}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  } else if (searched) {
+    content = <p className="entity-empty">No hay resultados.</p>;
+  } else {
+    content = (
+      <p className="entity-empty">Ingrese una cuenta y presione Buscar.</p>
+    );
+  }
 
   return (
     <div className="entity-container">
       <div className="entity-header">
         <h2>Reportes</h2>
-        <div className="entity-header-actions">
-          <input
-            type="text"
-            placeholder="Buscar cuenta"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button onClick={handleSearch}>Buscar</button>
+        <div className="entity-header-actions reports-actions">
+          <div className="reports-search">
+            <input
+              type="text"
+              placeholder="Buscar cuenta"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <button onClick={handleSearch} disabled={search.length < 3}>
+              Buscar
+            </button>
+          </div>
+          <button
+            onClick={handleDownload}
+            disabled={filteredMovements.length === 0}
+          >
+            Descargar
+          </button>
         </div>
       </div>
 
-      <div className="entity-data-container">
-        {filteredMovements.length > 0 ? (
-          <table className="reports-grid">
-            <thead>
-              <tr>
-                <th>Fecha y hora</th>
-                <th>Cuenta</th>
-                <th>Valor</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredMovements.map((m, index) => (
-                <tr key={index}>
-                  <td>{m.date}</td>
-                  <td>{m.account}</td>
-                  <td className={m.value < 0 ? 'negative' : 'positive'}>
-                    {m.value < 0 ? m.value : `+${m.value}`}
-                  </td>
-                  <td>{m.balance}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="entity-empty">Ingrese una cuenta y presione Buscar.</p>
-        )}
-      </div>
+      <div className="entity-data-container">{content}</div>
     </div>
   );
 }
