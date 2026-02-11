@@ -1,0 +1,31 @@
+.movements-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.movements-grid th,
+.movements-grid td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    /* rayitas divisorias */
+    text-align: left;
+}
+
+.movements-grid th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+}
+
+.movements-grid tr:last-child td {
+    border-bottom: none;
+}
+
+/* Colorear valores */
+.movements-grid td.negative {
+    color: red;
+}
+
+.movements-grid td.positive {
+    color: green;
+}
