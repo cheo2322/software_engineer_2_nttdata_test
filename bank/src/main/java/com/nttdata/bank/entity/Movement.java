@@ -1,5 +1,6 @@
 package com.nttdata.bank.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -20,7 +21,9 @@ public class Movement {
   private Long id;
 
   private Timestamp timestamp;
-  private MovementType movementType;
+
+  @Column(name = "movement_type")
+  private MovementType type;
   private Double value;
   private Double balance;
 

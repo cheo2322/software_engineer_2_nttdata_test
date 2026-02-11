@@ -2,7 +2,6 @@ package com.nttdata.bank.service;
 
 import com.nttdata.bank.dto.ClientDto;
 import com.nttdata.bank.entity.Client;
-import com.nttdata.bank.entity.Client.ClientStatus;
 import com.nttdata.bank.mapper.ClientMapper;
 import com.nttdata.bank.repository.ClientRepository;
 import com.nttdata.bank.util.PasswordUtil;
@@ -23,7 +22,7 @@ public class ClientService {
     Client client = CLIENT_MAPPER.dtoToClient(clientDto);
 
     client.setPasswordHash(PasswordUtil.hashPassword(clientDto.password()));
-    client.setStatus(ClientStatus.ACTIVE);
+    client.setStatus(true);
 
     clientRepository.save(client);
   }

@@ -1,5 +1,6 @@
 package com.nttdata.bank.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -18,10 +19,17 @@ public class Account {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @Column(name = "account_number", unique = true)
   private String accountNumber;
-  private AccountType accountType;
+
+  @Column(name = "account_type")
+  private AccountType type;
+
+  @Column(name = "initial_balance")
   private Double initialBalance;
-  private AccountStatus status;
+
+  @Column(name = "account_status")
+  private Boolean status;
 
   @ManyToOne
   @JoinColumn(name = "client_id", referencedColumnName = "id")
@@ -30,13 +38,5 @@ public class Account {
   enum AccountType {
     SAVINGS,
     CHECKING,
-
-  }
-
-  enum AccountStatus {
-    ACTIVE,
-    INACTIVE,
-    CLOSED,
-    BLOCKED
   }
 }
