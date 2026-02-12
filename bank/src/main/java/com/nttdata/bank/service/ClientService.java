@@ -3,6 +3,9 @@ package com.nttdata.bank.service;
 import com.nttdata.bank.dto.ClientDto;
 import com.nttdata.bank.entity.Client;
 import com.nttdata.bank.entity.Person;
+import com.nttdata.bank.entity.Person.GenrePerson;
+import com.nttdata.bank.exception.EntityNotFoundException;
+import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.mapper.ClientMapper;
 import com.nttdata.bank.repository.ClientRepository;
 import com.nttdata.bank.util.PasswordUtil;
@@ -31,7 +34,7 @@ public class ClientService {
 
   public void updateClient(Long clientId, ClientDto clientDto) {
     Client client = clientRepository.findById(clientId)
-      .orElseThrow(() -> new RuntimeException("Client not found with ID: " + clientId));
+      .orElseThrow(() -> new EntityNotFoundException(Client.class, String.valueOf(clientId)));
 
     Person person = client.getPerson();
 
@@ -41,9 +44,9 @@ public class ClientService {
 
     if (!StringUtils.isBlank(clientDto.genre())) {
       try {
-        person.setGenre(Person.GenrePerson.valueOf(clientDto.genre().toUpperCase()));
+        person.setGenre(GenrePerson.valueOf(clientDto.genre().toUpperCase()));
       } catch (IllegalArgumentException e) {
-        throw new RuntimeException("Invalid genre value: " + clientDto.genre());
+        throw new InvalidFieldException(Client.class, "genre", clientDto.genre());
       }
     }
 
@@ -62,7 +65,7 @@ public class ClientService {
 
   public void updateClientPassword(Long clientId, String newPassword) {
     Client client = clientRepository.findById(clientId)
-      .orElseThrow(() -> new RuntimeException("Client not found with ID: " + clientId));
+      .orElseThrow(() -> new EntityNotFoundException(Client.class, String.valueOf(clientId)));
 
     client.setPasswordHash(PasswordUtil.hashPassword(newPassword));
 
@@ -71,7 +74,7 @@ public class ClientService {
 
   public void deleteClient(Long clientId) {
     Client client = clientRepository.findById(clientId)
-      .orElseThrow(() -> new RuntimeException("Client not found with ID: " + clientId));
+      .orElseThrow(() -> new EntityNotFoundException(Client.class, String.valueOf(clientId)));
 
     client.setStatus(false);
 
