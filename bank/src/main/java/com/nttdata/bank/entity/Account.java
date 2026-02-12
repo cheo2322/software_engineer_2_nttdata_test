@@ -35,7 +35,7 @@ public class Account {
   @JoinColumn(name = "client_id", referencedColumnName = "id")
   private Client client;
 
-  enum AccountType {
+  public enum AccountType {
     SAVINGS,
     CHECKING,
   }
