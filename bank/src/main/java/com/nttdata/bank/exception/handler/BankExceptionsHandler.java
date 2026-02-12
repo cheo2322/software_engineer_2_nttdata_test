@@ -1,14 +1,15 @@
 package com.nttdata.bank.exception.handler;
 
 import com.nttdata.bank.dto.BankResponse;
-import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.EntityNotFoundException;
+import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.exception.UnavailableEntityException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MissingRequestValueException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -51,6 +52,14 @@ public class BankExceptionsHandler {
   @ExceptionHandler(InsufficientFundsException.class)
   public ResponseEntity<BankResponse<Void>> handleDebitExceedsBalanceException(
     InsufficientFundsException ex
+  ) {
+    BankResponse<Void> response = new BankResponse<>("001", ex.getMessage(), null);
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+  }
+
+  @ExceptionHandler(MissingRequestValueException.class)
+  public ResponseEntity<BankResponse<Void>> handleMissingRequestValueException(
+    MissingRequestValueException ex
   ) {
     BankResponse<Void> response = new BankResponse<>("001", ex.getMessage(), null);
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

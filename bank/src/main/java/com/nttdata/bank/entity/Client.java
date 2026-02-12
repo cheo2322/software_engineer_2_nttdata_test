@@ -30,7 +30,7 @@ public class Client {
   @Column(name = "client_status")
   private Boolean status;
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @JoinColumn(name = "person_id", referencedColumnName = "id")
   private Person person;
 
