@@ -9,7 +9,10 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(
+  unmappedTargetPolicy = org.mapstruct.ReportingPolicy.IGNORE,
+  unmappedSourcePolicy = org.mapstruct.ReportingPolicy.IGNORE
+)
 public interface AccountMapper {
 
   AccountMapper INSTANCE = Mappers.getMapper(AccountMapper.class);

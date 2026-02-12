@@ -1,7 +1,7 @@
 package com.nttdata.bank.exception.handler;
 
 import com.nttdata.bank.dto.BankResponse;
-import com.nttdata.bank.exception.DebitExceedsBalanceException;
+import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.exception.UnavailableEntityException;
@@ -48,9 +48,9 @@ public class BankExceptionsHandler {
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
   }
 
-  @ExceptionHandler(DebitExceedsBalanceException.class)
+  @ExceptionHandler(InsufficientFundsException.class)
   public ResponseEntity<BankResponse<Void>> handleDebitExceedsBalanceException(
-    DebitExceedsBalanceException ex
+    InsufficientFundsException ex
   ) {
     BankResponse<Void> response = new BankResponse<>("001", ex.getMessage(), null);
     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);

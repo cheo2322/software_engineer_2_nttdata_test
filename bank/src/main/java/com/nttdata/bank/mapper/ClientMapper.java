@@ -8,9 +8,13 @@ import com.nttdata.bank.exception.InvalidFieldException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(
+  unmappedTargetPolicy = ReportingPolicy.IGNORE,
+  unmappedSourcePolicy = ReportingPolicy.IGNORE
+)
 public interface ClientMapper {
 
   ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);

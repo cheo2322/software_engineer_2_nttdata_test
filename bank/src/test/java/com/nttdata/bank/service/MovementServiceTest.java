@@ -8,7 +8,7 @@ import static org.mockito.Mockito.when;
 import com.nttdata.bank.dto.MovementDto;
 import com.nttdata.bank.entity.Account;
 import com.nttdata.bank.entity.Movement;
-import com.nttdata.bank.exception.DebitExceedsBalanceException;
+import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.exception.UnavailableEntityException;
@@ -110,7 +110,7 @@ class MovementServiceTest {
     when(movementRepository.findTopByAccountIdOrderByTimestampDesc(1L))
       .thenReturn(Optional.empty());
 
-    assertThrows(DebitExceedsBalanceException.class,
+    assertThrows(InsufficientFundsException.class,
       () -> movementService.createDebit(dto));
   }
 

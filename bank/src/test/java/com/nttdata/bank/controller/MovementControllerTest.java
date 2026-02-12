@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import com.nttdata.bank.dto.MovementDto;
 import com.nttdata.bank.entity.Account;
-import com.nttdata.bank.exception.DebitExceedsBalanceException;
+import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.service.MovementService;
 import org.junit.jupiter.api.Test;
@@ -90,7 +90,7 @@ class MovementControllerTest {
   void shouldHandleDebitExceedsBalanceException_whenCreateDebit() {
     MovementDto dto = new MovementDto(null, "ACC123", 200.0, null);
 
-    doThrow(new DebitExceedsBalanceException(200.0, 100.0))
+    doThrow(new InsufficientFundsException())
       .when(movementService).createDebit(dto);
 
     restTestClient.post()
@@ -100,6 +100,6 @@ class MovementControllerTest {
       .exchange()
       .expectStatus().isBadRequest()
       .expectBody().jsonPath("$.message")
-      .isEqualTo("Debit amount '200.00' exceeds the balance amount: '100.00'");
+      .isEqualTo("Insufficient funds");
   }
 }

@@ -4,7 +4,7 @@ import com.nttdata.bank.dto.MovementDto;
 import com.nttdata.bank.entity.Account;
 import com.nttdata.bank.entity.Movement;
 import com.nttdata.bank.entity.Movement.MovementType;
-import com.nttdata.bank.exception.DebitExceedsBalanceException;
+import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.exception.UnavailableEntityException;
@@ -58,7 +58,7 @@ public class MovementService {
     double newBalance = balance + signedAmount;
 
     if (type == MovementType.WITHDRAWAL && newBalance < 0) {
-      throw new DebitExceedsBalanceException(dto.amount(), balance);
+      throw new InsufficientFundsException();
     }
 
     Movement newMovement = new Movement();
