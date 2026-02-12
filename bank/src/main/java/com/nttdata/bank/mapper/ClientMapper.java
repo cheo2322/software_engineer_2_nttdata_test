@@ -25,12 +25,9 @@ public interface ClientMapper {
 
   @Named("stringToGenrePerson")
   default GenrePerson stringToGenrePerson(String genre) {
-    if (genre == null) {
-      return null;
-    }
     try {
       return GenrePerson.valueOf(genre.toUpperCase());
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalArgumentException | NullPointerException e) {
       throw new InvalidFieldException(Person.class, "genre", genre);
     }
   }
