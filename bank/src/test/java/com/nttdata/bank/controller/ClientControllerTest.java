@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.client.RestTestClient;
@@ -47,8 +48,7 @@ class ClientControllerTest {
   @Test
   void shouldHandleInvalidFieldException_whenCreateClient() {
     ClientDto dto = new ClientDto("Sergio", "INVALID_GENRE", 29, "12345678", "123 St", "555-1234",
-      "secret",
-      "ACTIVE");
+      "secret", "ACTIVE");
 
     doThrow(new InvalidFieldException(GenrePerson.class, "genre", "INVALID_GENRE"))
       .when(clientService).createClient(dto);
@@ -61,6 +61,24 @@ class ClientControllerTest {
       .expectStatus().isBadRequest()
       .expectBody().jsonPath("$.message")
       .isEqualTo("Invalid value 'INVALID_GENRE' for field 'genre' in class 'GenrePerson'");
+  }
+
+  @Test
+  void shouldHandleDataAccessException_whenCreateClient() {
+    ClientDto dto = new ClientDto("Sergio", "MALE", 29, "12345678", "123 St", "555-1234",
+      "secret", "ACTIVE");
+
+    doThrow(new DataIntegrityViolationException("Database exception")).when(clientService)
+      .createClient(dto);
+
+    restTestClient.post()
+      .uri("/bank/v1/clients")
+      .contentType(MediaType.APPLICATION_JSON)
+      .body(dto)
+      .exchange()
+      .expectStatus().is5xxServerError()
+      .expectBody().jsonPath("$.message")
+      .isEqualTo("Database error occurred");
   }
 
   @Test
