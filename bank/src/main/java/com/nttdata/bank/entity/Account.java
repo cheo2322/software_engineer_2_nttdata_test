@@ -1,5 +1,6 @@
 package com.nttdata.bank.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,6 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,6 +41,9 @@ public class Account {
   @ManyToOne
   @JoinColumn(name = "client_id", referencedColumnName = "id")
   private Client client;
+
+  @OneToMany(mappedBy = "account", cascade = CascadeType.PERSIST)
+  private List<Movement> movements = new ArrayList<>();
 
   public enum AccountType {
     SAVINGS,

@@ -1,41 +1,41 @@
 -- Table creation --
 CREATE TABLE IF NOT EXISTS persons (
     id SERIAL PRIMARY KEY,
-    person_name VARCHAR(100) NOT NULL,
-    genre VARCHAR(20),
+    person_name VARCHAR(255),
+    genre VARCHAR(20) CHECK (genre IN ('MALE','FEMALE','OTHER')),
     age INT,
-    identification VARCHAR(50) UNIQUE,
-    address VARCHAR(200),
-    phone VARCHAR(20) UNIQUE
+    identification VARCHAR(255) UNIQUE,
+    address VARCHAR(255),
+    phone VARCHAR(50) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS clients (
     id SERIAL PRIMARY KEY,
     password_hash VARCHAR(255),
-    client_status VARCHAR(20),
+    client_status BOOLEAN,
     person_id INT UNIQUE,
-    CONSTRAINT fk_person FOREIGN KEY (person_id) REFERENCES persons(id)
+    CONSTRAINT fk_client_person FOREIGN KEY (person_id) REFERENCES persons(id)
 );
 
 CREATE TABLE IF NOT EXISTS accounts (
     id SERIAL PRIMARY KEY,
-    account_number VARCHAR(50) NOT NULL,
-    account_type VARCHAR(20),
+    account_number VARCHAR(50) UNIQUE,
+    account_type VARCHAR(20) CHECK (account_type IN ('SAVINGS','CHECKING')),
     initial_balance NUMERIC(15,2),
-    account_status VARCHAR(20),
+    account_status BOOLEAN,
     client_id INT,
-    CONSTRAINT fk_client FOREIGN KEY (client_id) REFERENCES clients(id)
+    CONSTRAINT fk_account_client FOREIGN KEY (client_id) REFERENCES clients(id)
 );
 
 CREATE TABLE IF NOT EXISTS movements (
     id SERIAL PRIMARY KEY,
-    movement_timestamp TIMESTAMP NOT NULL,
-    movement_type VARCHAR(20),
+    movement_timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    movement_type VARCHAR(20) CHECK (movement_type IN ('DEPOSIT','WITHDRAWAL')),
     movement_value NUMERIC(15,2),
     balance NUMERIC(15,2),
-    account_id INT UNIQUE,
-    CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES accounts(id)
-    );
+    account_id INT,
+    CONSTRAINT fk_movement_account FOREIGN KEY (account_id) REFERENCES accounts(id)
+);
 
 
 -- Data insertion --
