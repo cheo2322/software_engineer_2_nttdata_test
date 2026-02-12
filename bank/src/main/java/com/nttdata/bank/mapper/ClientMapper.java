@@ -4,6 +4,7 @@ import com.nttdata.bank.dto.ClientDto;
 import com.nttdata.bank.entity.Client;
 import com.nttdata.bank.entity.Person;
 import com.nttdata.bank.entity.Person.GenrePerson;
+import com.nttdata.bank.exception.InvalidFieldException;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -30,7 +31,7 @@ public interface ClientMapper {
     try {
       return GenrePerson.valueOf(genre.toUpperCase());
     } catch (IllegalArgumentException e) {
-      throw new RuntimeException("Invalid genre: " + genre);
+      throw new InvalidFieldException(Person.class, "genre", genre);
     }
   }
 }
