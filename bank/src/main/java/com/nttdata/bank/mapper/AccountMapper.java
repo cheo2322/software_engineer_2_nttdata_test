@@ -21,10 +21,6 @@ public interface AccountMapper {
 
   @Named("mapStringToAccountType")
   default AccountType mapStringToAccountType(String type) {
-    if (type == null) {
-      return null;
-    }
-
     try {
       return AccountType.valueOf(type);
     } catch (IllegalArgumentException e) {
