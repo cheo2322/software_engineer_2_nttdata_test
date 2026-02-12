@@ -66,13 +66,13 @@ class AccountControllerTest {
       .expectStatus().isOk()
       .expectBody().jsonPath("$.message").isEqualTo("Account status updated successfully");
 
-    verify(accountService, times(1)).activateAccount(1L);
+    verify(accountService, times(1)).activateAccount("1");
   }
 
   @Test
   void shouldHandleEntityNotFoundException_whenActivateAccount() {
     doThrow(new EntityNotFoundException(Account.class, "99"))
-      .when(accountService).activateAccount(99L);
+      .when(accountService).activateAccount("99");
 
     restTestClient.patch()
       .uri("/bank/v1/accounts/99/status")
@@ -89,13 +89,13 @@ class AccountControllerTest {
       .expectStatus().isOk()
       .expectBody().jsonPath("$.message").isEqualTo("Account deleted successfully");
 
-    verify(accountService, times(1)).deleteAccount(1L);
+    verify(accountService, times(1)).deleteAccount("1");
   }
 
   @Test
   void shouldHandleEntityNotFoundException_whenDeleteAccount() {
     doThrow(new EntityNotFoundException(Account.class, "99"))
-      .when(accountService).deleteAccount(99L);
+      .when(accountService).deleteAccount("99");
 
     restTestClient.delete()
       .uri("/bank/v1/accounts/99")

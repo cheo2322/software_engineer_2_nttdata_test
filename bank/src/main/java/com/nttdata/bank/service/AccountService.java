@@ -33,20 +33,19 @@ public class AccountService {
     accountRepository.save(account);
   }
 
-  public void activateAccount(Long accountId) {
-    this.updateAccountStatus(accountId, true);
+  public void activateAccount(String accountNumber) {
+    this.updateAccountStatus(accountNumber, true);
   }
 
-  public void deleteAccount(Long accountId) {
-    this.updateAccountStatus(accountId, false);
+  public void deleteAccount(String accountNumber) {
+    this.updateAccountStatus(accountNumber, false);
   }
 
-  private void updateAccountStatus(Long accountId, boolean status) {
-    Client client = clientRepository.findById(accountId)
-      .orElseThrow(() -> new EntityNotFoundException(Account.class, String.valueOf(accountId)));
+  private void updateAccountStatus(String accountNumber, boolean status) {
+    Account account = accountRepository.findByAccountNumber(accountNumber)
+      .orElseThrow(() -> new EntityNotFoundException(Account.class, accountNumber));
 
-    client.setStatus(status);
-
-    clientRepository.save(client);
+    account.setStatus(status);
+    accountRepository.save(account);
   }
 }

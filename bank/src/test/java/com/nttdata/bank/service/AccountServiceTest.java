@@ -37,6 +37,7 @@ class AccountServiceTest {
 
   private AccountDto accountDto;
   private Client client;
+  private Account account;
 
   @BeforeEach
   void setUp() {
@@ -45,6 +46,11 @@ class AccountServiceTest {
     client = new Client();
     client.setId(1L);
     client.setStatus(true);
+
+    account = new Account();
+    account.setAccountNumber("12345");
+    account.setStatus(true);
+    account.setClient(client);
   }
 
   @Test
@@ -70,41 +76,41 @@ class AccountServiceTest {
 
   @Test
   void testActivateAccount_success() {
-    when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
+    when(accountRepository.findByAccountNumber("12345")).thenReturn(Optional.of(account));
 
-    accountService.activateAccount(1L);
+    accountService.activateAccount("12345");
 
-    verify(clientRepository, times(1)).save(client);
-    assertTrue(client.getStatus());
+    verify(accountRepository, times(1)).save(account);
+    assertTrue(account.getStatus());
   }
 
   @Test
   void testActivateAccount_notFound() {
-    when(clientRepository.findById(99L)).thenReturn(Optional.empty());
+    when(accountRepository.findByAccountNumber("99999")).thenReturn(Optional.empty());
 
     assertThrows(EntityNotFoundException.class,
-      () -> accountService.activateAccount(99L));
+      () -> accountService.activateAccount("99999"));
 
-    verify(clientRepository, never()).save(any());
+    verify(accountRepository, never()).save(any());
   }
 
   @Test
   void testDeleteAccount_success() {
-    when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
+    when(accountRepository.findByAccountNumber("12345")).thenReturn(Optional.of(account));
 
-    accountService.deleteAccount(1L);
+    accountService.deleteAccount("12345");
 
-    verify(clientRepository, times(1)).save(client);
-    assertFalse(client.getStatus());
+    verify(accountRepository, times(1)).save(account);
+    assertFalse(account.getStatus());
   }
 
   @Test
   void testDeleteAccount_notFound() {
-    when(clientRepository.findById(99L)).thenReturn(Optional.empty());
+    when(accountRepository.findByAccountNumber("99999")).thenReturn(Optional.empty());
 
     assertThrows(EntityNotFoundException.class,
-      () -> accountService.deleteAccount(99L));
+      () -> accountService.deleteAccount("99999"));
 
-    verify(clientRepository, never()).save(any());
+    verify(accountRepository, never()).save(any());
   }
 }

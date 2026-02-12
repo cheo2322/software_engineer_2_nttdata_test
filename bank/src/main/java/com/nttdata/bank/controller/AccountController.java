@@ -30,17 +30,17 @@ public class AccountController {
       .body(new BankResponse<>("000", "Account created successfully", null));
   }
 
-  @PatchMapping("/{id}/status")
+  @PatchMapping("/{accountNumber}/status")
   public ResponseEntity<BankResponse<Void>> activateAccount(
-    @PathVariable("id") Long accountId) {
-    accountService.activateAccount(accountId);
+    @PathVariable String accountNumber) {
+    accountService.activateAccount(accountNumber);
     return ResponseEntity.ok(
       new BankResponse<>("000", "Account status updated successfully", null));
   }
 
-  @DeleteMapping("/{id}")
-  public ResponseEntity<BankResponse<Void>> deleteAccount(@PathVariable("id") Long accountId) {
-    accountService.deleteAccount(accountId);
+  @DeleteMapping("/{accountNumber}")
+  public ResponseEntity<BankResponse<Void>> deleteAccount(@PathVariable String accountNumber) {
+    accountService.deleteAccount(accountNumber);
     return ResponseEntity.ok(new BankResponse<>("000", "Account deleted successfully", null));
   }
 }
