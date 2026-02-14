@@ -122,14 +122,20 @@ export default function Clients() {
                 setNewClient({ ...newClient, name: e.target.value })
               }
             />
-            <input
-              type="text"
-              placeholder="Género"
-              value={newClient.genre}
-              onChange={(e) =>
-                setNewClient({ ...newClient, genre: e.target.value })
-              }
-            />
+            <label>
+              Género:
+              <select
+                value={newClient.genre}
+                onChange={(e) =>
+                  setNewClient({ ...newClient, genre: e.target.value })
+                }
+              >
+                <option value="">Seleccione...</option>
+                <option value="MALE">Masculino</option>
+                <option value="FEMALE">Femenino</option>
+                <option value="OTHER">Otro</option>
+              </select>
+            </label>
             <input
               type="number"
               placeholder="Edad"
