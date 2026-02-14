@@ -141,7 +141,7 @@ export default function Accounts() {
                 }
               >
                 <option value="SAVINGS">Ahorros</option>
-                <option value="CHECKINGS">Corriente</option>
+                <option value="CHECKING">Corriente</option>
               </select>
             </label>
             <input
