@@ -3,7 +3,9 @@ package com.nttdata.bank.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -16,6 +18,7 @@ import com.nttdata.bank.entity.Person;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.repository.ClientRepository;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,18 +41,21 @@ class ClientServiceTest {
 
   @BeforeEach
   void setUp() {
-    clientDto = new ClientDto("John Doe", "MALE", 30, "123456",
-      "Main Street", "555-1234", "secret", "true");
+    clientDto = new ClientDto(1L, "Test", "MALE", 30, "123456",
+      "Main Street", "555-1234", "secret", true);
 
     Person person = new Person();
-    person.setName("John Doe");
+    person.setName("Test");
     person.setGenre(Person.GenrePerson.MALE);
     person.setAddress("Main Street");
     person.setPhone("555-1234");
+    person.setAge(30);
+    person.setIdentification("123456");
 
     client = new Client();
     client.setId(1L);
     client.setPerson(person);
+    client.setStatus(true);
   }
 
   @Test
@@ -66,7 +72,7 @@ class ClientServiceTest {
     clientService.updateClient(1L, clientDto);
 
     verify(clientRepository, times(1)).save(client);
-    assertEquals("John Doe", client.getPerson().getName());
+    assertEquals("Test", client.getPerson().getName());
     assertEquals(Person.GenrePerson.MALE, client.getPerson().getGenre());
   }
 
@@ -84,7 +90,7 @@ class ClientServiceTest {
   void testUpdateClient_updateNameOnly() {
     when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
 
-    ClientDto dto = new ClientDto("New Name", null, null, null,
+    ClientDto dto = new ClientDto(null, "New Name", null, null, null,
       null, null, null, null);
 
     clientService.updateClient(1L, dto);
@@ -97,7 +103,7 @@ class ClientServiceTest {
   void testUpdateClient_updateGenreOnly() {
     when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
 
-    ClientDto dto = new ClientDto(null, "female", null, null,
+    ClientDto dto = new ClientDto(null, null, "female", null, null,
       null, null, null, null);
 
     clientService.updateClient(1L, dto);
@@ -110,7 +116,7 @@ class ClientServiceTest {
   void testUpdateClient_updateAddressOnly() {
     when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
 
-    ClientDto dto = new ClientDto(null, null, null, null,
+    ClientDto dto = new ClientDto(null, null, null, null, null,
       "New Address", null, null, null);
 
     clientService.updateClient(1L, dto);
@@ -123,7 +129,7 @@ class ClientServiceTest {
   void testUpdateClient_updatePhoneOnly() {
     when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
 
-    ClientDto dto = new ClientDto(null, null, null, null,
+    ClientDto dto = new ClientDto(null, null, null, null, null,
       null, "999-8888", null, null);
 
     clientService.updateClient(1L, dto);
@@ -136,8 +142,8 @@ class ClientServiceTest {
   void testUpdateClient_invalidGenre() {
     when(clientRepository.findById(1L)).thenReturn(Optional.of(client));
 
-    ClientDto invalidDto = new ClientDto("Jane", "INVALID", 25, "999",
-      "Street", "555-9999", "pwd", "true");
+    ClientDto invalidDto = new ClientDto(null, "Test", "INVALID", 25, "999",
+      "Street", "555-9999", "pwd", true);
 
     assertThrows(InvalidFieldException.class,
       () -> clientService.updateClient(1L, invalidDto));
@@ -183,5 +189,28 @@ class ClientServiceTest {
       () -> clientService.deleteClient(99L));
 
     verify(clientRepository, never()).save(any());
+  }
+
+  @Test
+  void testGetAllClients() {
+    when(clientRepository.findAll())
+      .thenReturn(List.of(client));
+
+    List<ClientDto> allClients = clientService.getAllClients();
+
+    assertEquals(1, allClients.size());
+
+    ClientDto dto = allClients.getFirst();
+    assertEquals(1L, dto.id());
+    assertEquals("Test", dto.name());
+    assertEquals("MALE", dto.genre());
+    assertEquals(30, dto.age());
+    assertEquals("123456", dto.identification());
+    assertEquals("Main Street", dto.address());
+    assertEquals("555-1234", dto.phone());
+    assertNull(dto.password());
+    assertTrue(dto.status());
+
+    verify(clientRepository, times(1)).findAll();
   }
 }

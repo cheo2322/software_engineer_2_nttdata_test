@@ -35,4 +35,13 @@ public interface ClientMapper {
       throw new InvalidFieldException(Person.class, "genre", genre);
     }
   }
+
+  @Mapping(source = "client.person.name", target = "name")
+  @Mapping(source = "client.person.genre", target = "genre")
+  @Mapping(source = "client.person.age", target = "age")
+  @Mapping(source = "client.person.identification", target = "identification")
+  @Mapping(source = "client.person.address", target = "address")
+  @Mapping(source = "client.person.phone", target = "phone")
+  @Mapping(target = "password", ignore = true)
+  ClientDto clientToDto(Client client);
 }

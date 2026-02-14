@@ -3,6 +3,7 @@ package com.nttdata.bank.controller;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.nttdata.bank.dto.ClientDto;
 import com.nttdata.bank.entity.Client;
@@ -10,6 +11,8 @@ import com.nttdata.bank.entity.Person.GenrePerson;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.service.ClientService;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -29,34 +32,39 @@ class ClientControllerTest {
   @MockitoBean
   private ClientService clientService;
 
+  private ClientDto clientDto;
+
+  @BeforeEach
+  void setup() {
+    clientDto = new ClientDto(1L, "Sergio", "MALE", 29, "12345678", "123 St", "555-1234",
+      "secret", true);
+  }
+
   @Test
   void shouldCreateClient() {
-    ClientDto dto = new ClientDto("Sergio", "MALE", 29, "12345678", "123 St", "555-1234", "secret",
-      "ACTIVE");
-
     restTestClient.post()
       .uri("/bank/v1/clients")
       .contentType(MediaType.APPLICATION_JSON)
-      .body(dto)
+      .body(clientDto)
       .exchange()
       .expectStatus().isCreated()
       .expectBody().jsonPath("$.message").isEqualTo("Client created successfully");
 
-    verify(clientService, times(1)).createClient(dto);
+    verify(clientService, times(1)).createClient(clientDto);
   }
 
   @Test
   void shouldHandleInvalidFieldException_whenCreateClient() {
-    ClientDto dto = new ClientDto("Sergio", "INVALID_GENRE", 29, "12345678", "123 St", "555-1234",
-      "secret", "ACTIVE");
+    ClientDto invalidClientDto = new ClientDto(1L, "Sergio", "INVALID_GENRE", 29, "12345678",
+      "123 St", "555-1234", "secret", true);
 
     doThrow(new InvalidFieldException(GenrePerson.class, "genre", "INVALID_GENRE"))
-      .when(clientService).createClient(dto);
+      .when(clientService).createClient(invalidClientDto);
 
     restTestClient.post()
       .uri("/bank/v1/clients")
       .contentType(MediaType.APPLICATION_JSON)
-      .body(dto)
+      .body(invalidClientDto)
       .exchange()
       .expectStatus().isBadRequest()
       .expectBody().jsonPath("$.message")
@@ -65,16 +73,13 @@ class ClientControllerTest {
 
   @Test
   void shouldHandleDataAccessException_whenCreateClient() {
-    ClientDto dto = new ClientDto("Sergio", "MALE", 29, "12345678", "123 St", "555-1234",
-      "secret", "ACTIVE");
-
     doThrow(new DataIntegrityViolationException("Database exception")).when(clientService)
-      .createClient(dto);
+      .createClient(clientDto);
 
     restTestClient.post()
       .uri("/bank/v1/clients")
       .contentType(MediaType.APPLICATION_JSON)
-      .body(dto)
+      .body(clientDto)
       .exchange()
       .expectStatus().is5xxServerError()
       .expectBody().jsonPath("$.message")
@@ -83,32 +88,26 @@ class ClientControllerTest {
 
   @Test
   void shouldUpdateClient() {
-    ClientDto dto = new ClientDto("Sergio", "MALE", 29, "12345678", "123 St", "555-1234", "secret",
-      "ACTIVE");
-
     restTestClient.put()
       .uri("/bank/v1/clients/1")
       .contentType(MediaType.APPLICATION_JSON)
-      .body(dto)
+      .body(clientDto)
       .exchange()
       .expectStatus().isOk()
       .expectBody().jsonPath("$.message").isEqualTo("Client updated successfully");
 
-    verify(clientService, times(1)).updateClient(1L, dto);
+    verify(clientService, times(1)).updateClient(1L, clientDto);
   }
 
   @Test
   void shouldHandleEntityNotFoundException_whenUpdateClient() {
-    ClientDto dto = new ClientDto("Sergio", "MALE", 29, "12345678", "123 St", "555-1234", "secret",
-      "ACTIVE");
-
     doThrow(new EntityNotFoundException(Client.class, "99"))
-      .when(clientService).updateClient(99L, dto);
+      .when(clientService).updateClient(99L, clientDto);
 
     restTestClient.put()
       .uri("/bank/v1/clients/99")
       .contentType(MediaType.APPLICATION_JSON)
-      .body(dto)
+      .body(clientDto)
       .exchange()
       .expectStatus().isNotFound()
       .expectBody().jsonPath("$.message").isEqualTo("Client with id 99 not found");
@@ -158,5 +157,40 @@ class ClientControllerTest {
       .exchange()
       .expectStatus().isNotFound()
       .expectBody().jsonPath("$.message").isEqualTo("Client with id 99 not found");
+  }
+
+  @Test
+  void shouldGetAllClients() {
+    when(clientService.getAllClients())
+      .thenReturn(List.of(clientDto));
+
+    restTestClient.get()
+      .uri("/bank/v1/clients")
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody()
+      .jsonPath("$.code").isEqualTo("000")
+      .jsonPath("$.message").isEqualTo("Clients retrieved successfully")
+      .jsonPath("$.data[0].id").isEqualTo(1L)
+      .jsonPath("$.data[0].name").isEqualTo("Sergio");
+
+    verify(clientService, times(1)).getAllClients();
+  }
+
+  @Test
+  void shouldReturnEmptyList_whenGetAllClients() {
+    when(clientService.getAllClients())
+      .thenReturn(List.of());
+
+    restTestClient.get()
+      .uri("/bank/v1/clients")
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody()
+      .jsonPath("$.code").isEqualTo("000")
+      .jsonPath("$.message").isEqualTo("Clients retrieved successfully")
+      .jsonPath("$.data").isEmpty();
+
+    verify(clientService, times(1)).getAllClients();
   }
 }

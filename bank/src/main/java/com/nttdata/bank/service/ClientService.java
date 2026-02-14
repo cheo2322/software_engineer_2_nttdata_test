@@ -9,6 +9,7 @@ import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.mapper.ClientMapper;
 import com.nttdata.bank.repository.ClientRepository;
 import com.nttdata.bank.util.PasswordUtil;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -79,5 +80,11 @@ public class ClientService {
     client.setStatus(false);
 
     clientRepository.save(client);
+  }
+
+  public List<ClientDto> getAllClients() {
+    return clientRepository.findAll().stream()
+      .map(CLIENT_MAPPER::clientToDto)
+      .toList();
   }
 }
