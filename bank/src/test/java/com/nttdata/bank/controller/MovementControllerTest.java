@@ -100,6 +100,6 @@ class MovementControllerTest {
       .exchange()
       .expectStatus().isBadRequest()
       .expectBody().jsonPath("$.message")
-      .isEqualTo("Insufficient funds");
+      .isEqualTo("Saldo no disponible");
   }
 }
