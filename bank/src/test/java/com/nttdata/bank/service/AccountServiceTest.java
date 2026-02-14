@@ -14,6 +14,7 @@ import com.nttdata.bank.dto.AccountDto;
 import com.nttdata.bank.entity.Account;
 import com.nttdata.bank.entity.Account.AccountType;
 import com.nttdata.bank.entity.Client;
+import com.nttdata.bank.entity.Person;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.repository.AccountRepository;
 import com.nttdata.bank.repository.ClientRepository;
@@ -44,11 +45,16 @@ class AccountServiceTest {
 
   @BeforeEach
   void setUp() {
-    accountDto = new AccountDto(1L, "12345", "SAVINGS", 1000.0, true, 1L);
+    accountDto = new AccountDto(1L, "12345", "SAVINGS", 1000.0, true, 1L, "Test");
+
+    Person person = new Person();
+    person.setId(0L);
+    person.setName("Test");
 
     client = new Client();
     client.setId(1L);
     client.setStatus(true);
+    client.setPerson(person);
 
     account = new Account();
     account.setId(10L);
@@ -72,7 +78,7 @@ class AccountServiceTest {
   void testCreateAccount_clientNotFound() {
     when(clientRepository.findById(99L)).thenReturn(Optional.empty());
 
-    AccountDto dto = new AccountDto(1L, "12345", "SAVINGS", 1000.0, true, 99L);
+    AccountDto dto = new AccountDto(1L, "12345", "SAVINGS", 1000.0, true, 99L, "Tests");
 
     assertThrows(EntityNotFoundException.class,
       () -> accountService.createAccount(dto));
@@ -135,6 +141,7 @@ class AccountServiceTest {
     assertEquals(100.0, responseDto.initialBalance());
     assertTrue(responseDto.status());
     assertEquals(1L, responseDto.clientId());
+    assertEquals("Test", responseDto.clientName());
 
     verify(accountRepository, times(1)).findAll();
   }

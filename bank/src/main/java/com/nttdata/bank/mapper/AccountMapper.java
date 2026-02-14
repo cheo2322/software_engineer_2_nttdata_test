@@ -33,5 +33,6 @@ public interface AccountMapper {
 
   @Mapping(source = "accountNumber", target = "number")
   @Mapping(source = "client.id", target = "clientId")
+  @Mapping(source = "client.person.name", target = "clientName")
   AccountDto entityToDto(Account account);
 }

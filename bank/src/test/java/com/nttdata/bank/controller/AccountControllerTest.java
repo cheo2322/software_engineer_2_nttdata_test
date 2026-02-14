@@ -29,7 +29,7 @@ class AccountControllerTest {
   @MockitoBean
   private AccountService accountService;
 
-  private final AccountDto dto = new AccountDto(1L, "12345", "SAVINGS", 1000.0, true, 1L);
+  private final AccountDto dto = new AccountDto(1L, "12345", "SAVINGS", 1000.0, true, 1L, "Test");
 
   @Test
   void shouldCreateAccount() {
@@ -121,7 +121,8 @@ class AccountControllerTest {
       .jsonPath("$.data[0].type").isEqualTo("SAVINGS")
       .jsonPath("$.data[0].initialBalance").isEqualTo(1000.0)
       .jsonPath("$.data[0].status").isEqualTo(true)
-      .jsonPath("$.data[0].clientId").isEqualTo(1L);
+      .jsonPath("$.data[0].clientId").isEqualTo(1L)
+      .jsonPath("$.data[0].clientName").isEqualTo("Test");
 
     verify(accountService, times(1)).getAllAccounts();
   }
