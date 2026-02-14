@@ -1,65 +1,114 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Movements.css';
 import '../../../styles/Entities.css';
 
 export default function Movements() {
-  const [movements] = useState([
-    { date: '2026-02-11 09:30', account: '001', value: -200, balance: 1300 },
-    { date: '2026-02-11 10:15', account: '002', value: 500, balance: 3700 },
-    { date: '2026-02-11 11:00', account: '003', value: -100, balance: 400 },
-  ]);
-
+  const [movements, setMovements] = useState([]);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchMovements = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await fetch('http://localhost:8080/bank/v1/movements');
+      if (!res.ok) {
+        throw new Error('Error en la respuesta del servidor');
+      }
+      const response = await res.json();
+      setMovements(response.data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMovements();
+  }, []);
 
   const filteredMovements = movements.filter(
     (m) =>
-      m.date.toLowerCase().includes(search.toLowerCase()) ||
-      m.account.toLowerCase().includes(search.toLowerCase()),
+      m.timestamp.toLowerCase().includes(search.toLowerCase()) ||
+      m.accountNumber.toLowerCase().includes(search.toLowerCase()),
   );
+
+  const formatTimestamp = (isoString) => {
+    const date = new Date(isoString);
+
+    const pad = (num) => String(num).padStart(2, '0');
+
+    const day = pad(date.getDate());
+    const month = pad(date.getMonth() + 1);
+    const year = date.getFullYear();
+
+    const hours = pad(date.getHours());
+    const minutes = pad(date.getMinutes());
+    const seconds = pad(date.getSeconds());
+
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+  };
+
+  let content;
+  if (loading) {
+    content = <p>Cargando movimientos...</p>;
+  } else if (error) {
+    content = <p className="entity-error">{error}</p>;
+  } else if (filteredMovements.length > 0) {
+    content = (
+      <table className="movements-grid">
+        <thead>
+          <tr>
+            <th>Fecha y hora</th>
+            <th>Cuenta</th>
+            <th>Tipo</th>
+            <th>Valor</th>
+            <th>Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredMovements.map((m, index) => {
+            const isDeposit = m.type === 'DEPOSIT';
+            const formattedValue = isDeposit ? `+${m.amount}` : `-${m.amount}`;
+            return (
+              <tr key={index}>
+                <td>{formatTimestamp(m.timestamp)}</td>
+                <td>{m.accountNumber}</td>
+                <td>{isDeposit ? 'Depósito' : 'Retiro'}</td>
+                <td className={isDeposit ? 'positive' : 'negative'}>
+                  {formattedValue}
+                </td>
+                <td>{m.balance}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    );
+  } else {
+    content = <p className="entity-empty">No hay movimientos disponibles.</p>;
+  }
 
   return (
     <div className="entity-container">
       <div className="entity-header">
         <h2>Movimientos</h2>
-        <div className="entity-header-actions">
-          <input
-            type="text"
-            placeholder="Buscar"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button onClick={() => alert('Nuevo movimiento')}>Nuevo</button>
+        <div className="entity-header-actions movements-actions">
+          <div className="movements-search">
+            <input
+              type="text"
+              placeholder="Buscar movimiento"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
         </div>
       </div>
 
-      <div className="entity-data-container">
-        {filteredMovements.length > 0 ? (
-          <table className="movements-grid">
-            <thead>
-              <tr>
-                <th>Fecha y hora</th>
-                <th>Cuenta</th>
-                <th>Valor</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredMovements.map((m, index) => (
-                <tr key={index}>
-                  <td>{m.date}</td>
-                  <td>{m.account}</td>
-                  <td className={m.value < 0 ? 'negative' : 'positive'}>
-                    {m.value < 0 ? m.value : `+${m.value}`}
-                  </td>
-                  <td>{m.balance}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p className="entity-empty">No hay movimientos disponibles.</p>
-        )}
-      </div>
+      <div className="entity-data-container">{content}</div>
     </div>
   );
 }
