@@ -1,38 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import './Accounts.css';
 import '../../../styles/Entities.css';
 
 export default function Accounts() {
-  const [accounts] = useState([
-    {
-      nro: '001',
-      tipo: 'Ahorros',
-      saldoInicial: 1500,
-      estado: true,
-      cliente: 'Juan Pérez',
-    },
-    {
-      nro: '002',
-      tipo: 'Corriente',
-      saldoInicial: 3200,
-      estado: false,
-      cliente: 'María López',
-    },
-    {
-      nro: '003',
-      tipo: 'Ahorros',
-      saldoInicial: 500,
-      estado: true,
-      cliente: 'Carlos Sánchez',
-    },
-  ]);
-
+  const [accounts, setAccounts] = useState([]);
   const [search, setSearch] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:8080/bank/v1/accounts')
+      .then((res) => res.json())
+      .then((response) => {
+        console.log('Fetched accounts:', response);
+        setAccounts(response.data);
+      })
+      .catch((err) => console.error('Error fetching accounts:', err));
+  }, []);
 
   const filteredAccounts = accounts.filter(
     (a) =>
-      a.nro.toLowerCase().includes(search.toLowerCase()) ||
-      a.cliente.toLowerCase().includes(search.toLowerCase()),
+      a.number.toLowerCase().includes(search.toLowerCase()) ||
+      String(a.clientId).includes(search.toLowerCase()),
   );
 
   return (
@@ -64,12 +51,12 @@ export default function Accounts() {
             </thead>
             <tbody>
               {filteredAccounts.map((acc) => (
-                <tr key={acc.nro}>
-                  <td>{acc.nro}</td>
-                  <td>{acc.tipo}</td>
-                  <td>${acc.saldoInicial}</td>
-                  <td>{acc.estado ? 'Activo' : 'Inactivo'}</td>
-                  <td>{acc.cliente}</td>
+                <tr key={acc.id}>
+                  <td>{acc.number}</td>
+                  <td>{acc.type === 'SAVINGS' ? 'Ahorros' : 'Corriente'}</td>
+                  <td>${acc.initialBalance}</td>
+                  <td>{String(acc.status)}</td>
+                  <td>{acc.clientName}</td>
                 </tr>
               ))}
             </tbody>
