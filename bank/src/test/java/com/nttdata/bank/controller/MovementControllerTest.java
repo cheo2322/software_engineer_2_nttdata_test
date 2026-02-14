@@ -7,9 +7,12 @@ import static org.mockito.Mockito.when;
 
 import com.nttdata.bank.dto.MovementDto;
 import com.nttdata.bank.entity.Account;
-import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.EntityNotFoundException;
+import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.service.MovementService;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -101,5 +104,41 @@ class MovementControllerTest {
       .expectStatus().isBadRequest()
       .expectBody().jsonPath("$.message")
       .isEqualTo("Saldo no disponible");
+  }
+
+  @Test
+  void shouldGetMovements() {
+    MovementDto dto = new MovementDto(Timestamp.from(Instant.now()).toString(), "100200", 200.0,
+      null);
+
+    when(movementService.getAllMovements()).thenReturn(List.of(dto));
+
+    restTestClient.get()
+      .uri("/bank/v1/movements")
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody()
+      .jsonPath("$.code").isEqualTo("000")
+      .jsonPath("$.message").isEqualTo("Movements retrieved successfully")
+      .jsonPath("$.data[0].accountNumber").isEqualTo("100200")
+      .jsonPath("$.data[0].amount").isEqualTo(200.0);
+
+    verify(movementService, times(1)).getAllMovements();
+  }
+
+  @Test
+  void shouldReturnEmptyList_whenGetMovements() {
+    when(movementService.getAllMovements()).thenReturn(List.of());
+
+    restTestClient.get()
+      .uri("/bank/v1/movements")
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody()
+      .jsonPath("$.code").isEqualTo("000")
+      .jsonPath("$.message").isEqualTo("Movements retrieved successfully")
+      .jsonPath("$.data").isEmpty();
+
+    verify(movementService, times(1)).getAllMovements();
   }
 }

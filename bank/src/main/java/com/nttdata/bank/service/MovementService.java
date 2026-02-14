@@ -4,12 +4,14 @@ import com.nttdata.bank.dto.MovementDto;
 import com.nttdata.bank.entity.Account;
 import com.nttdata.bank.entity.Movement;
 import com.nttdata.bank.entity.Movement.MovementType;
-import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.EntityNotFoundException;
+import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.exception.UnavailableEntityException;
+import com.nttdata.bank.mapper.MovementMapper;
 import com.nttdata.bank.repository.AccountRepository;
 import com.nttdata.bank.repository.MovementRepository;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,8 @@ public class MovementService {
 
   private final MovementRepository movementRepository;
   private final AccountRepository accountRepository;
+
+  private static final MovementMapper MOVEMENT_MAPPER = MovementMapper.INSTANCE;
 
   public MovementService(MovementRepository movementRepository,
     AccountRepository accountRepository) {
@@ -75,5 +79,11 @@ public class MovementService {
       signedAmount,
       newBalance
     );
+  }
+
+  public List<MovementDto> getAllMovements() {
+    return movementRepository.findAll().stream()
+      .map(MOVEMENT_MAPPER::entityToDto)
+      .toList();
   }
 }

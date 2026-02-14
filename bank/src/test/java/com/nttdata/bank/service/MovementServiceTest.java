@@ -1,6 +1,7 @@
 package com.nttdata.bank.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
@@ -8,14 +9,15 @@ import static org.mockito.Mockito.when;
 import com.nttdata.bank.dto.MovementDto;
 import com.nttdata.bank.entity.Account;
 import com.nttdata.bank.entity.Movement;
-import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.EntityNotFoundException;
+import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.exception.InvalidFieldException;
 import com.nttdata.bank.exception.UnavailableEntityException;
 import com.nttdata.bank.repository.AccountRepository;
 import com.nttdata.bank.repository.MovementRepository;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -146,5 +148,28 @@ class MovementServiceTest {
 
     assertThrows(InvalidFieldException.class,
       () -> movementService.createCredit(dto));
+  }
+
+  @Test
+  void testGetAllMovements() {
+    Movement movement = new Movement();
+    movement.setId(1L);
+    movement.setTimestamp(Timestamp.from(Instant.now()));
+    movement.setType(Movement.MovementType.DEPOSIT);
+    movement.setValue(50.0);
+    movement.setBalance(150.0);
+    movement.setAccount(activeAccount);
+
+    when(movementRepository.findAll()).thenReturn(List.of(movement));
+
+    List<MovementDto> result = movementService.getAllMovements();
+
+    assertEquals(1, result.size());
+
+    MovementDto resultDto = result.getFirst();
+    assertNotNull(resultDto.timestamp());
+    assertEquals("ACC123", resultDto.accountNumber());
+    assertEquals(50.0, resultDto.amount());
+    assertEquals(150.0, resultDto.balance());
   }
 }
