@@ -10,8 +10,6 @@ import com.nttdata.bank.entity.Account;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.exception.InsufficientFundsException;
 import com.nttdata.bank.service.MovementService;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +29,12 @@ class MovementControllerTest {
   @MockitoBean
   private MovementService movementService;
 
+  private final MovementDto dto = new MovementDto(null, "100200", 50.0, null, null);
+
   @Test
   void shouldCreateCredit() {
-    MovementDto dto = new MovementDto(null, "ACC123", 50.0, null);
-    MovementDto responseDto = new MovementDto("2026-02-12T10:00:00", "ACC123", 50.0, 150.0);
+    MovementDto responseDto = new MovementDto("2026-02-12T10:00:00", "100200", 50.0, 150.0,
+      "DEPOSIT");
 
     when(movementService.createCredit(dto)).thenReturn(responseDto);
 
@@ -45,7 +45,7 @@ class MovementControllerTest {
       .exchange()
       .expectStatus().isOk()
       .expectBody().jsonPath("$.message").isEqualTo("Credit created successfully")
-      .jsonPath("$.data.accountNumber").isEqualTo("ACC123")
+      .jsonPath("$.data.accountNumber").isEqualTo("100200")
       .jsonPath("$.data.amount").isEqualTo(50.0)
       .jsonPath("$.data.balance").isEqualTo(150.0);
 
@@ -54,8 +54,6 @@ class MovementControllerTest {
 
   @Test
   void shouldHandleEntityNotFoundException_whenCreateCredit() {
-    MovementDto dto = new MovementDto(null, "ACC999", 50.0, null);
-
     doThrow(new EntityNotFoundException(Account.class, "ACC999"))
       .when(movementService).createCredit(dto);
 
@@ -70,8 +68,8 @@ class MovementControllerTest {
 
   @Test
   void shouldCreateDebit() {
-    MovementDto dto = new MovementDto(null, "ACC123", 40.0, null);
-    MovementDto responseDto = new MovementDto("2026-02-12T10:05:00", "ACC123", -40.0, 60.0);
+    MovementDto responseDto = new MovementDto("2026-02-12T10:05:00", "100200", 40.0, 60.0,
+      "WITHDRAWAL");
 
     when(movementService.createDebit(dto)).thenReturn(responseDto);
 
@@ -82,8 +80,8 @@ class MovementControllerTest {
       .exchange()
       .expectStatus().isOk()
       .expectBody().jsonPath("$.message").isEqualTo("Debit created successfully")
-      .jsonPath("$.data.accountNumber").isEqualTo("ACC123")
-      .jsonPath("$.data.amount").isEqualTo(-40.0)
+      .jsonPath("$.data.accountNumber").isEqualTo("100200")
+      .jsonPath("$.data.amount").isEqualTo(40.0)
       .jsonPath("$.data.balance").isEqualTo(60.0);
 
     verify(movementService, times(1)).createDebit(dto);
@@ -91,8 +89,6 @@ class MovementControllerTest {
 
   @Test
   void shouldHandleDebitExceedsBalanceException_whenCreateDebit() {
-    MovementDto dto = new MovementDto(null, "ACC123", 200.0, null);
-
     doThrow(new InsufficientFundsException())
       .when(movementService).createDebit(dto);
 
@@ -108,9 +104,6 @@ class MovementControllerTest {
 
   @Test
   void shouldGetMovements() {
-    MovementDto dto = new MovementDto(Timestamp.from(Instant.now()).toString(), "100200", 200.0,
-      null);
-
     when(movementService.getAllMovements()).thenReturn(List.of(dto));
 
     restTestClient.get()
@@ -121,7 +114,7 @@ class MovementControllerTest {
       .jsonPath("$.code").isEqualTo("000")
       .jsonPath("$.message").isEqualTo("Movements retrieved successfully")
       .jsonPath("$.data[0].accountNumber").isEqualTo("100200")
-      .jsonPath("$.data[0].amount").isEqualTo(200.0);
+      .jsonPath("$.data[0].amount").isEqualTo(50.0);
 
     verify(movementService, times(1)).getAllMovements();
   }

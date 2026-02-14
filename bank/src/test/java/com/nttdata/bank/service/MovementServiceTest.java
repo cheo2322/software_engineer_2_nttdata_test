@@ -37,6 +37,7 @@ class MovementServiceTest {
   private MovementService movementService;
 
   private Account activeAccount;
+  private final MovementDto dto = new MovementDto(null, "100200", 50.0, null, null);
 
   @BeforeEach
   void setUp() {
@@ -44,16 +45,14 @@ class MovementServiceTest {
 
     activeAccount = new Account();
     activeAccount.setId(1L);
-    activeAccount.setAccountNumber("ACC123");
+    activeAccount.setAccountNumber("100200");
     activeAccount.setInitialBalance(100.0);
     activeAccount.setStatus(true);
   }
 
   @Test
   void testCreateCredit_success() {
-    MovementDto dto = new MovementDto(null, "ACC123", 50.0, null);
-
-    when(accountRepository.findByAccountNumber("ACC123"))
+    when(accountRepository.findByAccountNumber("100200"))
       .thenReturn(Optional.of(activeAccount));
     when(movementRepository.findTopByAccountIdOrderByTimestampDesc(1L))
       .thenReturn(Optional.empty());
@@ -70,18 +69,17 @@ class MovementServiceTest {
 
     MovementDto result = movementService.createCredit(dto);
 
-    assertEquals("ACC123", result.accountNumber());
+    assertEquals("100200", result.accountNumber());
     assertEquals(50.0, result.amount());
     assertEquals(150.0, result.balance());
   }
 
   @Test
   void testCreateDebit_success() {
-    MovementDto dto = new MovementDto(null, "ACC123", 40.0, null);
     Movement lastMovement = new Movement();
     lastMovement.setBalance(100.0);
 
-    when(accountRepository.findByAccountNumber("ACC123"))
+    when(accountRepository.findByAccountNumber("100200"))
       .thenReturn(Optional.of(activeAccount));
     when(movementRepository.findTopByAccountIdOrderByTimestampDesc(1L))
       .thenReturn(Optional.of(lastMovement));
@@ -98,28 +96,26 @@ class MovementServiceTest {
 
     MovementDto result = movementService.createDebit(dto);
 
-    assertEquals("ACC123", result.accountNumber());
-    assertEquals(-40.0, result.amount()); // signedAmount
-    assertEquals(60.0, result.balance());
+    assertEquals("100200", result.accountNumber());
+    assertEquals(-50.0, result.amount());
+    assertEquals(50.0, result.balance());
   }
 
   @Test
   void testCreateDebit_exceedsBalance_throwsException() {
-    MovementDto dto = new MovementDto(null, "ACC123", 200.0, null);
+    MovementDto movementDto = new MovementDto(null, "100200", 100.01, null, null);
 
-    when(accountRepository.findByAccountNumber("ACC123"))
+    when(accountRepository.findByAccountNumber("100200"))
       .thenReturn(Optional.of(activeAccount));
     when(movementRepository.findTopByAccountIdOrderByTimestampDesc(1L))
       .thenReturn(Optional.empty());
 
     assertThrows(InsufficientFundsException.class,
-      () -> movementService.createDebit(dto));
+      () -> movementService.createDebit(movementDto));
   }
 
   @Test
   void testCreateMovement_accountNotFound_throwsException() {
-    MovementDto dto = new MovementDto(null, "ACC999", 50.0, null);
-
     when(accountRepository.findByAccountNumber("ACC999"))
       .thenReturn(Optional.empty());
 
@@ -130,9 +126,8 @@ class MovementServiceTest {
   @Test
   void testCreateMovement_inactiveAccount_throwsException() {
     activeAccount.setStatus(false);
-    MovementDto dto = new MovementDto(null, "ACC123", 50.0, null);
 
-    when(accountRepository.findByAccountNumber("ACC123"))
+    when(accountRepository.findByAccountNumber("100200"))
       .thenReturn(Optional.of(activeAccount));
 
     assertThrows(UnavailableEntityException.class,
@@ -141,13 +136,13 @@ class MovementServiceTest {
 
   @Test
   void testCreateMovement_invalidAmount_throwsException() {
-    MovementDto dto = new MovementDto(null, "ACC123", 0.0, null);
+    MovementDto movementDto = new MovementDto(null, "100200", -10.0, null, null);
 
-    when(accountRepository.findByAccountNumber("ACC123"))
+    when(accountRepository.findByAccountNumber("100200"))
       .thenReturn(Optional.of(activeAccount));
 
     assertThrows(InvalidFieldException.class,
-      () -> movementService.createCredit(dto));
+      () -> movementService.createCredit(movementDto));
   }
 
   @Test
@@ -168,7 +163,7 @@ class MovementServiceTest {
 
     MovementDto resultDto = result.getFirst();
     assertNotNull(resultDto.timestamp());
-    assertEquals("ACC123", resultDto.accountNumber());
+    assertEquals("100200", resultDto.accountNumber());
     assertEquals(50.0, resultDto.amount());
     assertEquals(150.0, resultDto.balance());
   }

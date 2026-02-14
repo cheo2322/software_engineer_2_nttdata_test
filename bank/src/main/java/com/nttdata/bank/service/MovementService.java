@@ -77,7 +77,8 @@ public class MovementService {
       savedMovement.getTimestamp().toString(),
       account.getAccountNumber(),
       signedAmount,
-      newBalance
+      newBalance,
+      savedMovement.getType().name()
     );
   }
 
