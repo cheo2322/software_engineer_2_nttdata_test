@@ -20,7 +20,7 @@ export default function Clients() {
     status: true,
   });
 
-  useEffect(() => {
+  const fetchClients = () => {
     fetch('http://localhost:8080/bank/v1/clients')
       .then((res) => {
         if (!res.ok) {
@@ -32,11 +32,11 @@ export default function Clients() {
       .then((response) => setClients(response.data))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
-  }, []);
+  };
 
-  const filteredClients = clients.filter((c) =>
-    c.name.toLowerCase().includes(search.toLowerCase()),
-  );
+  useEffect(() => {
+    fetchClients();
+  }, []);
 
   const handleCreateClient = () => {
     fetch('http://localhost:8080/bank/v1/clients', {
@@ -51,13 +51,14 @@ export default function Clients() {
       .then(() => {
         alert('Cliente creado correctamente');
         setShowModal(false);
-        // refrescar lista
-        return fetch('/bank/v1/clients')
-          .then((res) => res.json())
-          .then((response) => setClients(response.data));
+        fetchClients();
       })
       .catch((err) => alert(err.message));
   };
+
+  const filteredClients = clients.filter((c) =>
+    c.name.toLowerCase().includes(search.toLowerCase()),
+  );
 
   let content;
   if (loading) {
