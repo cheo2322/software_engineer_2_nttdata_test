@@ -30,4 +30,8 @@ public interface AccountMapper {
       throw new InvalidFieldException(Account.class, "type", type);
     }
   }
+
+  @Mapping(source = "accountNumber", target = "number")
+  @Mapping(source = "client.id", target = "clientId")
+  AccountDto entityToDto(Account account);
 }

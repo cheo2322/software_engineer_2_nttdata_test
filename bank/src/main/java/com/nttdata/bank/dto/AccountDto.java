@@ -1,6 +1,6 @@
 package com.nttdata.bank.dto;
 
-public record AccountDto(String number, String type, double initialBalance, boolean status,
+public record AccountDto(Long id, String number, String type, double initialBalance, boolean status,
                          Long clientId) {
 
 }

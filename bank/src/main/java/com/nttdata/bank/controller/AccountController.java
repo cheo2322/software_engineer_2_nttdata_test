@@ -3,9 +3,11 @@ package com.nttdata.bank.controller;
 import com.nttdata.bank.dto.AccountDto;
 import com.nttdata.bank.dto.BankResponse;
 import com.nttdata.bank.service.AccountService;
+import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,5 +44,12 @@ public class AccountController {
   public ResponseEntity<BankResponse<Void>> deleteAccount(@PathVariable String accountNumber) {
     accountService.deleteAccount(accountNumber);
     return ResponseEntity.ok(new BankResponse<>("000", "Account deleted successfully", null));
+  }
+
+  @GetMapping
+  public ResponseEntity<BankResponse<List<AccountDto>>> getAllAccounts() {
+    return ResponseEntity.ok(
+      new BankResponse<>("000", "Accounts retrieved successfully", accountService.getAllAccounts())
+    );
   }
 }

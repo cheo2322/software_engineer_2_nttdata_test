@@ -1,5 +1,6 @@
 package com.nttdata.bank.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -11,10 +12,12 @@ import static org.mockito.Mockito.when;
 
 import com.nttdata.bank.dto.AccountDto;
 import com.nttdata.bank.entity.Account;
+import com.nttdata.bank.entity.Account.AccountType;
 import com.nttdata.bank.entity.Client;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.repository.AccountRepository;
 import com.nttdata.bank.repository.ClientRepository;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,16 +44,19 @@ class AccountServiceTest {
 
   @BeforeEach
   void setUp() {
-    accountDto = new AccountDto("12345", "SAVINGS", 1000.0, true, 1L);
+    accountDto = new AccountDto(1L, "12345", "SAVINGS", 1000.0, true, 1L);
 
     client = new Client();
     client.setId(1L);
     client.setStatus(true);
 
     account = new Account();
+    account.setId(10L);
     account.setAccountNumber("12345");
+    account.setType(AccountType.SAVINGS);
     account.setStatus(true);
     account.setClient(client);
+    account.setInitialBalance(100.00);
   }
 
   @Test
@@ -66,7 +72,7 @@ class AccountServiceTest {
   void testCreateAccount_clientNotFound() {
     when(clientRepository.findById(99L)).thenReturn(Optional.empty());
 
-    AccountDto dto = new AccountDto("12345", "SAVINGS", 1000.0, true, 99L);
+    AccountDto dto = new AccountDto(1L, "12345", "SAVINGS", 1000.0, true, 99L);
 
     assertThrows(EntityNotFoundException.class,
       () -> accountService.createAccount(dto));
@@ -112,5 +118,24 @@ class AccountServiceTest {
       () -> accountService.deleteAccount("99999"));
 
     verify(accountRepository, never()).save(any());
+  }
+
+  @Test
+  void testGetAllAccounts() {
+    when(accountRepository.findAll()).thenReturn(List.of(account));
+
+    List<AccountDto> allAccounts = accountService.getAllAccounts();
+
+    assertEquals(1, allAccounts.size());
+
+    AccountDto responseDto = allAccounts.getFirst();
+    assertEquals(10L, responseDto.id());
+    assertEquals(account.getAccountNumber(), responseDto.number());
+    assertEquals("SAVINGS", responseDto.type());
+    assertEquals(100.0, responseDto.initialBalance());
+    assertTrue(responseDto.status());
+    assertEquals(1L, responseDto.clientId());
+
+    verify(accountRepository, times(1)).findAll();
   }
 }

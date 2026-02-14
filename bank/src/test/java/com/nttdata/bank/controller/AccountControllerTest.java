@@ -3,12 +3,14 @@ package com.nttdata.bank.controller;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.nttdata.bank.dto.AccountDto;
 import com.nttdata.bank.entity.Account;
 import com.nttdata.bank.entity.Client;
 import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.service.AccountService;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.resttestclient.autoconfigure.AutoConfigureRestTestClient;
@@ -27,10 +29,10 @@ class AccountControllerTest {
   @MockitoBean
   private AccountService accountService;
 
+  private final AccountDto dto = new AccountDto(1L, "12345", "SAVINGS", 1000.0, true, 1L);
+
   @Test
   void shouldCreateAccount() {
-    AccountDto dto = new AccountDto("12345", "SAVINGS", 1000.0, true, 1L);
-
     restTestClient.post()
       .uri("/bank/v1/accounts")
       .contentType(MediaType.APPLICATION_JSON)
@@ -44,8 +46,6 @@ class AccountControllerTest {
 
   @Test
   void shouldHandleEntityNotFoundException_whenCreateAccount() {
-    AccountDto dto = new AccountDto("12345", "SAVINGS", 1000.0, true, 99L);
-
     doThrow(new EntityNotFoundException(Client.class, "99"))
       .when(accountService).createAccount(dto);
 
@@ -102,5 +102,41 @@ class AccountControllerTest {
       .exchange()
       .expectStatus().isNotFound()
       .expectBody().jsonPath("$.message").isEqualTo("Account with id 99 not found");
+  }
+
+  @Test
+  void shouldGetAllAccounts() {
+    when(accountService.getAllAccounts()).thenReturn(List.of(dto));
+
+    restTestClient.get()
+      .uri("/bank/v1/accounts")
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody()
+      .jsonPath("$.code").isEqualTo("000")
+      .jsonPath("$.message").isEqualTo("Accounts retrieved successfully")
+      .jsonPath("$.data.length()").isEqualTo(1)
+      .jsonPath("$.data[0].id").isEqualTo(1L)
+      .jsonPath("$.data[0].number").isEqualTo("12345")
+      .jsonPath("$.data[0].type").isEqualTo("SAVINGS")
+      .jsonPath("$.data[0].initialBalance").isEqualTo(1000.0)
+      .jsonPath("$.data[0].status").isEqualTo(true)
+      .jsonPath("$.data[0].clientId").isEqualTo(1L);
+
+    verify(accountService, times(1)).getAllAccounts();
+  }
+
+  @Test
+  void shouldReturnEmptyList_whenGetAllAccounts() {
+    restTestClient.get()
+      .uri("/bank/v1/accounts")
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody()
+      .jsonPath("$.code").isEqualTo("000")
+      .jsonPath("$.message").isEqualTo("Accounts retrieved successfully")
+      .jsonPath("$.data").isEmpty();
+
+    verify(accountService, times(1)).getAllAccounts();
   }
 }

@@ -7,6 +7,7 @@ import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.mapper.AccountMapper;
 import com.nttdata.bank.repository.AccountRepository;
 import com.nttdata.bank.repository.ClientRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,5 +48,11 @@ public class AccountService {
 
     account.setStatus(status);
     accountRepository.save(account);
+  }
+
+  public List<AccountDto> getAllAccounts() {
+      return accountRepository.findAll().stream()
+        .map(ACCOUNT_MAPPER::entityToDto)
+        .toList();
   }
 }
