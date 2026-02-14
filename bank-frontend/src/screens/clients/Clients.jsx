@@ -1,40 +1,39 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Clients.css';
 import '../../../styles/Entities.css';
 
 export default function Clients() {
-  const [clients] = useState([
-    {
-      id: 1,
-      name: 'Juan Pérez',
-      address: 'Calle Falsa 123',
-      phone: '555-1234',
-      status: true,
-    },
-    {
-      id: 2,
-      name: 'María López',
-      address: 'Avenida Siempre Viva 456',
-      phone: '555-5678',
-      status: false,
-    },
-    {
-      id: 3,
-      name: 'Carlos Sánchez',
-      address: 'Boulevard de los Sueños Rotos 789',
-      phone: '555-9012',
-      status: true,
-    },
-  ]);
-
+  const [clients, setClients] = useState([]);
   const [search, setSearch] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/bank/v1/clients')
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Error en la respuesta del servidor');
+        }
+
+        return res.json();
+      })
+      .then((response) => {
+        setClients(response.data);
+      })
+      .catch((err) => setError(err.message))
+      .finally(() => setLoading(false));
+  }, []);
 
   const filteredClients = clients.filter((c) =>
     c.name.toLowerCase().includes(search.toLowerCase()),
   );
 
   let content;
-  if (filteredClients.length > 0) {
+  if (loading) {
+    content = <p className="entity-empty">Cargando clientes...</p>;
+  } else if (error) {
+    content = <p className="entity-empty">Error: {error}</p>;
+  } else if (filteredClients.length > 0) {
     content = (
       <table className="entity-grid">
         <thead>
@@ -51,9 +50,7 @@ export default function Clients() {
               <td>{c.name}</td>
               <td>{c.address}</td>
               <td>{c.phone}</td>
-              <td className={c.status ? 'active' : 'inactive'}>
-                {c.status ? 'Activo' : 'Inactivo'}
-              </td>
+              <td>{String(c.status)}</td>
             </tr>
           ))}
         </tbody>
