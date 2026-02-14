@@ -64,7 +64,7 @@ export default function Accounts() {
   const filteredAccounts = accounts.filter(
     (a) =>
       a.number.toLowerCase().includes(search.toLowerCase()) ||
-      String(a.clientId).includes(search.toLowerCase()),
+      a.clientName.toLowerCase().includes(search.toLowerCase()),
   );
 
   let content;
