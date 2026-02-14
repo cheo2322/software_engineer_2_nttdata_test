@@ -9,6 +9,7 @@ import com.nttdata.bank.exception.EntityNotFoundException;
 import com.nttdata.bank.repository.AccountRepository;
 import com.nttdata.bank.repository.ClientRepository;
 import com.nttdata.bank.repository.MovementRepository;
+import com.nttdata.bank.util.DocumentUtil;
 import com.nttdata.bank.util.TimeUtil;
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -64,5 +65,11 @@ public class ReportService {
       .toList();
 
     return new ReportResponseDto(reports);
+  }
+
+  public String getReportPdf(String initialDate, String finalDate, String clientIdentification) {
+    return DocumentUtil.generateReportPdfBase64(
+      this.getReport(initialDate, finalDate, clientIdentification)
+    );
   }
 }

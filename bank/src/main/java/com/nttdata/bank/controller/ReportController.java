@@ -33,4 +33,19 @@ public class ReportController {
       )
     );
   }
+
+  @GetMapping("/pdf")
+  public ResponseEntity<BankResponse<String>> getReportPdf(
+    @RequestParam String initialDate,
+    @RequestParam String finalDate,
+    @RequestParam String clientIdentification
+  ) {
+    return ResponseEntity.ok(
+      new BankResponse<>(
+        "000",
+        "Report PDF generated successfully",
+        reportService.getReportPdf(initialDate, finalDate, clientIdentification)
+      )
+    );
+  }
 }
