@@ -49,3 +49,29 @@
     color: #666;
     padding: 1rem;
 }
+
+.entity-grid {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+.entity-grid th,
+.entity-grid td {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.entity-grid th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+}
+
+.entity-grid td.negative {
+    color: red;
+}
+
+.entity-grid td.positive {
+    color: green;
+}

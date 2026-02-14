@@ -1,29 +1,3 @@
-.reports-grid {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-.reports-grid th,
-.reports-grid td {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    text-align: left;
-}
-
-.reports-grid th {
-    background-color: #f9f9f9;
-    font-weight: 600;
-}
-
-.reports-grid td.negative {
-    color: red;
-}
-
-.reports-grid td.positive {
-    color: green;
-}
-
 .reports-actions {
     display: flex;
     justify-content: space-between;

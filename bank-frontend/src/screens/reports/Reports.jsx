@@ -4,10 +4,34 @@ import '../../../styles/Entities.css';
 
 export default function Reports() {
   const [movements] = useState([
-    { date: '2026-02-11 09:30', account: '001', value: -200, balance: 1300 },
-    { date: '2026-02-11 10:15', account: '002', value: 500, balance: 3700 },
-    { date: '2026-02-11 11:00', account: '003', value: -100, balance: 400 },
-    { date: '2026-02-11 12:00', account: '001', value: 300, balance: 1600 },
+    {
+      id: 1,
+      date: '2026-02-11 09:30',
+      account: '001',
+      value: -200,
+      balance: 1300,
+    },
+    {
+      id: 2,
+      date: '2026-02-11 10:15',
+      account: '002',
+      value: 500,
+      balance: 3700,
+    },
+    {
+      id: 3,
+      date: '2026-02-11 11:00',
+      account: '003',
+      value: -100,
+      balance: 400,
+    },
+    {
+      id: 4,
+      date: '2026-02-11 12:00',
+      account: '001',
+      value: 300,
+      balance: 1600,
+    },
   ]);
 
   const [search, setSearch] = useState('');
@@ -29,7 +53,7 @@ export default function Reports() {
   let content;
   if (filteredMovements.length > 0) {
     content = (
-      <table className="reports-grid">
+      <table className="entity-grid">
         <thead>
           <tr>
             <th>Fecha y hora</th>
@@ -39,8 +63,8 @@ export default function Reports() {
           </tr>
         </thead>
         <tbody>
-          {filteredMovements.map((m, index) => (
-            <tr key={index}>
+          {filteredMovements.map((m) => (
+            <tr key={m.id}>
               <td>{m.date}</td>
               <td>{m.account}</td>
               <td className={m.value < 0 ? 'negative' : 'positive'}>
