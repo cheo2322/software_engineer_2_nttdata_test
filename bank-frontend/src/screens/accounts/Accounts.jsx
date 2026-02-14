@@ -4,9 +4,27 @@ import '../../../styles/Entities.css';
 
 export default function Accounts() {
   const [accounts] = useState([
-    { nro: '001', userId: 'Juan Pérez', balance: 1500 },
-    { nro: '002', userId: 'María López', balance: 3200 },
-    { nro: '003', userId: 'Carlos Sánchez', balance: 500 },
+    {
+      nro: '001',
+      tipo: 'Ahorros',
+      saldoInicial: 1500,
+      estado: true,
+      cliente: 'Juan Pérez',
+    },
+    {
+      nro: '002',
+      tipo: 'Corriente',
+      saldoInicial: 3200,
+      estado: false,
+      cliente: 'María López',
+    },
+    {
+      nro: '003',
+      tipo: 'Ahorros',
+      saldoInicial: 500,
+      estado: true,
+      cliente: 'Carlos Sánchez',
+    },
   ]);
 
   const [search, setSearch] = useState('');
@@ -14,7 +32,7 @@ export default function Accounts() {
   const filteredAccounts = accounts.filter(
     (a) =>
       a.nro.toLowerCase().includes(search.toLowerCase()) ||
-      a.userId.toLowerCase().includes(search.toLowerCase()),
+      a.cliente.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -37,17 +55,21 @@ export default function Accounts() {
           <table className="accounts-grid">
             <thead>
               <tr>
-                <th>Nro. de cuenta</th>
-                <th>Usuario</th>
-                <th>Balance</th>
+                <th>Número Cuenta</th>
+                <th>Tipo</th>
+                <th>Saldo Inicial</th>
+                <th>Estado</th>
+                <th>Cliente</th>
               </tr>
             </thead>
             <tbody>
-              {filteredAccounts.map((acc, index) => (
-                <tr key={index}>
+              {filteredAccounts.map((acc) => (
+                <tr key={acc.nro}>
                   <td>{acc.nro}</td>
-                  <td>{acc.userId}</td>
-                  <td>${acc.balance}</td>
+                  <td>{acc.tipo}</td>
+                  <td>${acc.saldoInicial}</td>
+                  <td>{acc.estado ? 'Activo' : 'Inactivo'}</td>
+                  <td>{acc.cliente}</td>
                 </tr>
               ))}
             </tbody>
