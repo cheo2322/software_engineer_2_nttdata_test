@@ -7,28 +7,44 @@ export default function Reports() {
     {
       id: 1,
       date: '2026-02-11 09:30',
+      client: 'Juan Pérez',
       account: '001',
+      type: 'Ahorros',
+      initialBalance: 1500,
+      state: 'Activo',
       value: -200,
       balance: 1300,
     },
     {
       id: 2,
       date: '2026-02-11 10:15',
+      client: 'María Gómez',
       account: '002',
+      type: 'Corriente',
+      initialBalance: 3200,
+      state: 'Activo',
       value: 500,
       balance: 3700,
     },
     {
       id: 3,
       date: '2026-02-11 11:00',
+      client: 'Carlos Ruiz',
       account: '003',
+      type: 'Ahorros',
+      initialBalance: 500,
+      state: 'Inactivo',
       value: -100,
       balance: 400,
     },
     {
       id: 4,
       date: '2026-02-11 12:00',
+      client: 'Juan Pérez',
       account: '001',
+      type: 'Ahorros',
+      initialBalance: 1500,
+      state: 'Activo',
       value: 300,
       balance: 1600,
     },
@@ -56,17 +72,25 @@ export default function Reports() {
       <table className="entity-grid">
         <thead>
           <tr>
-            <th>Fecha y hora</th>
-            <th>Cuenta</th>
-            <th>Valor</th>
-            <th>Balance</th>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Número Cuenta</th>
+            <th>Tipo</th>
+            <th>Saldo Inicial</th>
+            <th>Estado</th>
+            <th>Movimiento</th>
+            <th>Saldo Disponible</th>
           </tr>
         </thead>
         <tbody>
           {filteredMovements.map((m) => (
             <tr key={m.id}>
               <td>{m.date}</td>
+              <td>{m.client}</td>
               <td>{m.account}</td>
+              <td>{m.type}</td>
+              <td>${m.initialBalance}</td>
+              <td>{m.state}</td>
               <td className={m.value < 0 ? 'negative' : 'positive'}>
                 {m.value < 0 ? m.value : `+${m.value}`}
               </td>
