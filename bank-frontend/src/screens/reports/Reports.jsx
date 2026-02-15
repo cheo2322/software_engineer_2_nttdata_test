@@ -4,13 +4,21 @@ import '../../../styles/Entities.css';
 
 export default function Reports() {
   const [search, setSearch] = useState('');
+  const [initialDate, setInitialDate] = useState('');
+  const [finalDate, setFinalDate] = useState('');
   const [reports, setReports] = useState([]);
   const [searched, setSearched] = useState(false);
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-');
+    return `${day}-${month}-${year}`;
+  };
 
   const handleSearch = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/bank/v1/reports?initialDate=12-02-2026&finalDate=12-02-2026&clientIdentification=${search}`,
+        `http://localhost:8080/bank/v1/reports?initialDate=${formatDate(initialDate)}&finalDate=${formatDate(finalDate)}&clientIdentification=${search}`,
       );
       const bankResponse = await response.json();
       console.log('Bank response:', bankResponse);
@@ -25,7 +33,7 @@ export default function Reports() {
       console.error('Error fetching report:', error);
       setReports([]);
       setSearched(true);
-      alert('Ocurrio un error, intente mas tarde.');
+      alert('Ocurrió un error, intente más tarde.');
     }
   };
 
@@ -55,7 +63,7 @@ export default function Reports() {
               <td>{r.date}</td>
               <td>{r.client}</td>
               <td>{r.accountNumber}</td>
-              <td>{r.accountType == 'SAVINGS' ? 'Ahorros' : 'Corriente'}</td>
+              <td>{r.accountType === 'SAVINGS' ? 'Ahorros' : 'Corriente'}</td>
               <td>${r.initialBalance}</td>
               <td>{String(r.status)}</td>
               <td className={r.type === 'DEPOSIT' ? 'positive' : 'negative'}>
@@ -89,7 +97,22 @@ export default function Reports() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <button onClick={handleSearch} disabled={search.length < 3}>
+            Fecha inicio:
+            <input
+              type="date"
+              value={initialDate}
+              onChange={(e) => setInitialDate(e.target.value)}
+            />
+            Fecha fin:
+            <input
+              type="date"
+              value={finalDate}
+              onChange={(e) => setFinalDate(e.target.value)}
+            />
+            <button
+              onClick={handleSearch}
+              disabled={search.length < 3 || !initialDate || !finalDate}
+            >
               Buscar
             </button>
           </div>

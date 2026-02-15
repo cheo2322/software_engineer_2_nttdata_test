@@ -59,3 +59,12 @@
   padding: 0 2rem;
   background-color: #fff;
 }
+
+input[type="text"],
+input[type="date"] {
+  font-family: inherit;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
