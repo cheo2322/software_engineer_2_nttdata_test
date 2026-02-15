@@ -60,7 +60,8 @@ public class ReportService {
         movement.getAccount().getInitialBalance(),
         movement.getAccount().getStatus(),
         movement.getValue(),
-        movement.getBalance()
+        movement.getBalance(),
+        movement.getAccount().getType().name()
       ))
       .toList();
 

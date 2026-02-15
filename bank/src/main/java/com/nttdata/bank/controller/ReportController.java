@@ -4,11 +4,13 @@ import com.nttdata.bank.dto.BankResponse;
 import com.nttdata.bank.dto.ReportResponseDto;
 import com.nttdata.bank.service.ReportService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/bank/v1/reports")
 public class ReportController {

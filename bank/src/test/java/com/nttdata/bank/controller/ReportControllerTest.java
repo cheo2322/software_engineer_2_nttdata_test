@@ -39,7 +39,8 @@ class ReportControllerTest {
       500.0,
       true,
       50.0,
-      150.0
+      150.0,
+      "SAVINGS"
     );
     ReportResponseDto responseDto = new ReportResponseDto(List.of(report));
 

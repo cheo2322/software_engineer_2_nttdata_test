@@ -13,6 +13,7 @@ import static org.mockito.Mockito.when;
 import com.nttdata.bank.dto.Report;
 import com.nttdata.bank.dto.ReportResponseDto;
 import com.nttdata.bank.entity.Account;
+import com.nttdata.bank.entity.Account.AccountType;
 import com.nttdata.bank.entity.Client;
 import com.nttdata.bank.entity.Movement;
 import com.nttdata.bank.entity.Movement.MovementType;
@@ -65,6 +66,7 @@ class ReportServiceTest {
     account.setAccountNumber("100200");
     account.setInitialBalance(500.00);
     account.setStatus(true);
+    account.setType(AccountType.SAVINGS);
 
     movement = new Movement();
     movement.setTimestamp(Timestamp.valueOf("2026-02-10 12:53:00"));
@@ -127,7 +129,7 @@ class ReportServiceTest {
   }
 
   @Test
-  void shouldGenerateReportPdfSuccessfully() {
+  void shouldGenerateReportPdf() {
     when(clientRepository.findByPersonIdentification("1234567890"))
       .thenReturn(Optional.of(client));
     when(accountRepository.findAllByClientId(10L))
