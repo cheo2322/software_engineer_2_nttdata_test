@@ -3,63 +3,30 @@ import './Reports.css';
 import '../../../styles/Entities.css';
 
 export default function Reports() {
-  const [movements] = useState([
-    {
-      id: 1,
-      date: '2026-02-11 09:30',
-      client: 'Juan Pérez',
-      account: '001',
-      type: 'Ahorros',
-      initialBalance: 1500,
-      state: 'Activo',
-      value: -200,
-      balance: 1300,
-    },
-    {
-      id: 2,
-      date: '2026-02-11 10:15',
-      client: 'María Gómez',
-      account: '002',
-      type: 'Corriente',
-      initialBalance: 3200,
-      state: 'Activo',
-      value: 500,
-      balance: 3700,
-    },
-    {
-      id: 3,
-      date: '2026-02-11 11:00',
-      client: 'Carlos Ruiz',
-      account: '003',
-      type: 'Ahorros',
-      initialBalance: 500,
-      state: 'Inactivo',
-      value: -100,
-      balance: 400,
-    },
-    {
-      id: 4,
-      date: '2026-02-11 12:00',
-      client: 'Juan Pérez',
-      account: '001',
-      type: 'Ahorros',
-      initialBalance: 1500,
-      state: 'Activo',
-      value: 300,
-      balance: 1600,
-    },
-  ]);
-
   const [search, setSearch] = useState('');
-  const [filteredMovements, setFilteredMovements] = useState([]);
+  const [reports, setReports] = useState([]);
   const [searched, setSearched] = useState(false);
 
-  const handleSearch = () => {
-    const results = movements
-      .filter((m) => m.account.toLowerCase().includes(search.toLowerCase()))
-      .sort((a, b) => new Date(a.date) - new Date(b.date));
-    setFilteredMovements(results);
-    setSearched(true);
+  const handleSearch = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/bank/v1/reports?initialDate=12-02-2026&finalDate=12-02-2026&clientIdentification=${search}`,
+      );
+      const bankResponse = await response.json();
+      console.log('Bank response:', bankResponse);
+
+      const results = bankResponse.data.reports.sort(
+        (a, b) => new Date(a.date) - new Date(b.date),
+      );
+
+      setReports(results);
+      setSearched(true);
+    } catch (error) {
+      console.error('Error fetching report:', error);
+      setReports([]);
+      setSearched(true);
+      alert('Ocurrio un error, intente mas tarde.');
+    }
   };
 
   const handleDownload = () => {
@@ -67,7 +34,7 @@ export default function Reports() {
   };
 
   let content;
-  if (filteredMovements.length > 0) {
+  if (reports.length > 0) {
     content = (
       <table className="entity-grid">
         <thead>
@@ -83,18 +50,18 @@ export default function Reports() {
           </tr>
         </thead>
         <tbody>
-          {filteredMovements.map((m) => (
-            <tr key={m.id}>
-              <td>{m.date}</td>
-              <td>{m.client}</td>
-              <td>{m.account}</td>
-              <td>{m.type}</td>
-              <td>${m.initialBalance}</td>
-              <td>{m.state}</td>
-              <td className={m.value < 0 ? 'negative' : 'positive'}>
-                {m.value < 0 ? m.value : `+${m.value}`}
+          {reports.map((r, idx) => (
+            <tr key={idx}>
+              <td>{r.date}</td>
+              <td>{r.client}</td>
+              <td>{r.accountNumber}</td>
+              <td>{r.accountType == 'SAVINGS' ? 'Ahorros' : 'Corriente'}</td>
+              <td>${r.initialBalance}</td>
+              <td>{String(r.status)}</td>
+              <td className={r.type === 'DEPOSIT' ? 'positive' : 'negative'}>
+                {r.type === 'DEPOSIT' ? '+' : '-'}${r.movement}
               </td>
-              <td>${m.balance}</td>
+              <td>${r.availableBalance}</td>
             </tr>
           ))}
         </tbody>
@@ -104,7 +71,9 @@ export default function Reports() {
     content = <p className="entity-empty">No hay resultados.</p>;
   } else {
     content = (
-      <p className="entity-empty">Ingrese una cuenta y presione Buscar.</p>
+      <p className="entity-empty">
+        Ingrese una identificación y presione Buscar.
+      </p>
     );
   }
 
@@ -116,7 +85,7 @@ export default function Reports() {
           <div className="reports-search">
             <input
               type="text"
-              placeholder="Buscar cuenta"
+              placeholder="Buscar por identificación cliente"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -124,10 +93,7 @@ export default function Reports() {
               Buscar
             </button>
           </div>
-          <button
-            onClick={handleDownload}
-            disabled={filteredMovements.length === 0}
-          >
+          <button onClick={handleDownload} disabled={reports.length === 0}>
             Descargar
           </button>
         </div>
