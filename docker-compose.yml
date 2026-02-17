@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres_db_bank
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: bank_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  backend:
+    build: ./bank
+    container_name: spring_backend_bank
+    environment:
+      NTTDATA_BANK_DB_URL: jdbc:postgresql://postgres:5432/bank_db
+      NTTDATA_BANK_DB_USERNAME: postgres
+      NTTDATA_BANK_DB_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./bank-frontend
+      args:
+        VITE_BANK_BACKEND_BASE_URL: http://localhost:8080
+    container_name: react_frontend_bank
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
