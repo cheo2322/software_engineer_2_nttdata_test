@@ -27,21 +27,26 @@ public class DocumentUtil {
     Table table = new Table(columnWidths);
 
     // Headers
-    table.addHeaderCell(new Cell().add(new Paragraph("Date")));
-    table.addHeaderCell(new Cell().add(new Paragraph("Client")));
-    table.addHeaderCell(new Cell().add(new Paragraph("Account")));
-    table.addHeaderCell(new Cell().add(new Paragraph("Type")));
-    table.addHeaderCell(new Cell().add(new Paragraph("Initial Balance")));
-    table.addHeaderCell(new Cell().add(new Paragraph("Status")));
-    table.addHeaderCell(new Cell().add(new Paragraph("Movement")));
-    table.addHeaderCell(new Cell().add(new Paragraph("Available Balance")));
+    table.addHeaderCell(new Cell().add(new Paragraph("Fecha")));
+    table.addHeaderCell(new Cell().add(new Paragraph("Cliente")));
+    table.addHeaderCell(new Cell().add(new Paragraph("Número Cuenta")));
+    table.addHeaderCell(new Cell().add(new Paragraph("Tipo")));
+    table.addHeaderCell(new Cell().add(new Paragraph("Saldo Inicial")));
+    table.addHeaderCell(new Cell().add(new Paragraph("Estado")));
+    table.addHeaderCell(new Cell().add(new Paragraph("Movimiento")));
+    table.addHeaderCell(new Cell().add(new Paragraph("Saldo Disponible")));
 
     // Data rows
     for (Report report : reportResponse.reports()) {
+      String accountType = switch (report.accountType()) {
+        case "SAVINGS" -> "Ahorros";
+        case "CHECKING" -> "Corriente";
+        default -> report.accountType();
+      };
       table.addCell(new Cell().add(new Paragraph(report.date())));
       table.addCell(new Cell().add(new Paragraph(report.client())));
       table.addCell(new Cell().add(new Paragraph(report.accountNumber())));
-      table.addCell(new Cell().add(new Paragraph(report.type())));
+      table.addCell(new Cell().add(new Paragraph(accountType)));
       table.addCell(new Cell().add(new Paragraph(String.valueOf(report.initialBalance()))));
       table.addCell(new Cell().add(new Paragraph(String.valueOf(report.status()))));
       table.addCell(new Cell().add(new Paragraph(String.valueOf(report.movement()))));
