@@ -2,6 +2,8 @@ import { useState } from 'react';
 import './Reports.css';
 import '../../../styles/Entities.css';
 
+const BANK_BACKEND_BASE_URL = import.meta.env.VITE_BANK_BACKEND_BASE_URL;
+
 export default function Reports() {
   const [search, setSearch] = useState('');
   const [initialDate, setInitialDate] = useState('');
@@ -18,10 +20,14 @@ export default function Reports() {
   const handleSearch = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/bank/v1/reports?initialDate=${formatDate(initialDate)}&finalDate=${formatDate(finalDate)}&clientIdentification=${search}`,
+        `${BANK_BACKEND_BASE_URL}/bank/v1/reports?initialDate=${formatDate(initialDate)}&finalDate=${formatDate(finalDate)}&clientIdentification=${search}`,
       );
       const bankResponse = await response.json();
-      console.log('Bank response:', bankResponse);
+      if (bankResponse.data === null) {
+        setReports([]);
+        setSearched(true);
+        return;
+      }
 
       const results = bankResponse.data.reports.sort(
         (a, b) => new Date(a.date) - new Date(b.date),
@@ -93,7 +99,7 @@ export default function Reports() {
           <div className="reports-search">
             <input
               type="text"
-              placeholder="Buscar por identificación cliente"
+              placeholder="Identificación del cliente"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

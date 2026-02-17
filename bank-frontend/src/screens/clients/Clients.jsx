@@ -3,6 +3,8 @@ import './Clients.css';
 import '../../../styles/Entities.css';
 import '../../../styles/Modal.css';
 
+const BANK_BACKEND_BASE_URL = import.meta.env.VITE_BANK_BACKEND_BASE_URL;
+
 export default function Clients() {
   const [clients, setClients] = useState([]);
   const [search, setSearch] = useState('');
@@ -21,7 +23,7 @@ export default function Clients() {
   });
 
   const fetchClients = () => {
-    fetch('http://localhost:8080/bank/v1/clients')
+    fetch(`${BANK_BACKEND_BASE_URL}/bank/v1/clients`)
       .then((res) => {
         if (!res.ok) {
           throw new Error('Error en la respuesta del servidor');
@@ -100,7 +102,7 @@ export default function Clients() {
           <div className="clients-search">
             <input
               type="text"
-              placeholder="Buscar cliente"
+              placeholder="Buscar"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

@@ -3,6 +3,8 @@ import './Accounts.css';
 import '../../../styles/Entities.css';
 import '../../../styles/Modal.css';
 
+const BANK_BACKEND_BASE_URL = import.meta.env.VITE_BANK_BACKEND_BASE_URL;
+
 export default function Accounts() {
   const [accounts, setAccounts] = useState([]);
   const [search, setSearch] = useState('');
@@ -22,7 +24,7 @@ export default function Accounts() {
     setError(null);
 
     try {
-      const res = await fetch('http://localhost:8080/bank/v1/accounts');
+      const res = await fetch(`${BANK_BACKEND_BASE_URL}/bank/v1/accounts`);
       if (!res.ok) {
         throw new Error('Error en la respuesta del servidor');
       }
@@ -109,7 +111,7 @@ export default function Accounts() {
           <div className="accounts-search">
             <input
               type="text"
-              placeholder="Buscar cuenta"
+              placeholder="Buscar"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />

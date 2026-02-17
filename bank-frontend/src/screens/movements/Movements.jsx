@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import './Movements.css';
 import '../../../styles/Entities.css';
 
+const BANK_BACKEND_BASE_URL = import.meta.env.VITE_BANK_BACKEND_BASE_URL;
+
 export default function Movements() {
   const [movements, setMovements] = useState([]);
   const [search, setSearch] = useState('');
@@ -13,7 +15,7 @@ export default function Movements() {
     setError(null);
 
     try {
-      const res = await fetch('http://localhost:8080/bank/v1/movements');
+      const res = await fetch(`${BANK_BACKEND_BASE_URL}/bank/v1/movements`);
       if (!res.ok) {
         throw new Error('Error en la respuesta del servidor');
       }
@@ -30,10 +32,8 @@ export default function Movements() {
     fetchMovements();
   }, []);
 
-  const filteredMovements = movements.filter(
-    (m) =>
-      m.timestamp.toLowerCase().includes(search.toLowerCase()) ||
-      m.accountNumber.toLowerCase().includes(search.toLowerCase()),
+  const filteredMovements = movements.filter((m) =>
+    m.accountNumber.toLowerCase().includes(search.toLowerCase()),
   );
 
   const formatTimestamp = (isoString) => {
@@ -100,7 +100,7 @@ export default function Movements() {
           <div className="movements-search">
             <input
               type="text"
-              placeholder="Buscar movimiento"
+              placeholder="Buscar por cuenta"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
