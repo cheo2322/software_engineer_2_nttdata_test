@@ -43,8 +43,34 @@ export default function Reports() {
     }
   };
 
-  const handleDownload = () => {
-    alert('Por implementar');
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(
+        `${BANK_BACKEND_BASE_URL}/bank/v1/reports/pdf?initialDate=${formatDate(initialDate)}&finalDate=${formatDate(finalDate)}&clientIdentification=${search}`,
+      );
+
+      const bankResponse = await response.json();
+      const base64Pdf = bankResponse.data;
+
+      const byteCharacters = atob(base64Pdf);
+      const byteNumbers = new Array(byteCharacters.length)
+        .fill()
+        .map((_, i) => byteCharacters.codePointAt(i));
+      const byteArray = new Uint8Array(byteNumbers);
+
+      const blob = new Blob([byteArray], { type: 'application/pdf' });
+      const url = globalThis.URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'reporte.pdf';
+      link.click();
+
+      globalThis.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Ocurrió un error al descargar el PDF, intente más tarde.');
+    }
   };
 
   let content;
