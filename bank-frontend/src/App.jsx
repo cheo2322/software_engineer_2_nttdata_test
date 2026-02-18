@@ -33,6 +33,7 @@ function App() {
 
           <main className="app-content">
             <Routes>
+              <Route path="/" element={<Clients />} />
               <Route path="/clients" element={<Clients />} />
               <Route path="/accounts" element={<Accounts />} />
               <Route path="/movements" element={<Movements />} />
